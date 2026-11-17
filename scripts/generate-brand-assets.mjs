@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { company } from '../src/data/company.js'
+import { company, getCompanySchema } from '../src/data/company.js'
 
 // Generate local sharing artwork and the static HTML metadata from one identity.
 // These assets are bundled by Vite; the production build requires no browser.
@@ -11,7 +11,7 @@ const root = fileURLToPath(new URL('../', import.meta.url))
 const escape = (value) => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
 const title = `Construction & Building Services | ${company.brandName}`
 const description = `${company.brandName} brings building, swimming pools, P.O.P. ceilings, interiors, tiling, paving, and painting together. Discuss your next project.`
-const imageAlt = `${company.brandName} architectural wordmark. Thoughtful construction. Exceptional finishes.`
+const imageAlt = `${company.brandName} architectural wordmark. ${company.slogan}`
 const mark = '<path d="M7 40V15L22 7v33M22 40V23l19-10v27H7" stroke="currentColor" stroke-width="1.7"/><path d="M14 19v21M31 18v22M7 32h34" stroke="currentColor" stroke-width="1.3"/>'
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <title>${escape(company.companyName)}</title>
@@ -23,8 +23,8 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
   <path d="M161 147h24" stroke="#86652f"/>
   <text x="197" y="152" fill="#86652f" font-family="Segoe UI, sans-serif" font-size="12" letter-spacing="3">${escape(company.legalSuffix)}</text>
   <g transform="translate(817 198) scale(5.8)" fill="none" color="#bc9c67" opacity="0.22">${mark}</g>
-  <text x="80" y="306" fill="#162d3e" font-family="Georgia, serif" font-size="57" letter-spacing="-1.2">Thoughtful construction.</text>
-  <text x="80" y="379" fill="#162d3e" font-family="Georgia, serif" font-size="57" letter-spacing="-1.2">Exceptional finishes.</text>
+  <text x="80" y="306" fill="#162d3e" font-family="Georgia, serif" font-size="72" letter-spacing="-1.2">We Build It</text>
+  <text x="80" y="379" fill="#162d3e" font-family="Georgia, serif" font-size="72" letter-spacing="-1.2">Better.</text>
   <text x="83" y="433" fill="#647078" font-family="Segoe UI, sans-serif" font-size="16" letter-spacing="0.6">BUILDING · POOLS · INTERIORS · PAVING · PAINTING</text>
   <path d="M80 489h1040" stroke="#e3e4de"/>
   <text x="82" y="526" fill="#162d3e" font-family="Segoe UI, sans-serif" font-size="13" font-weight="600" letter-spacing="1">${escape(company.companyName)}</text>
@@ -60,6 +60,8 @@ for (const [attribute, name, value] of metadata) {
   const existing = new RegExp(`<meta\\s+${attribute}="${name}"[^>]*>`, 'i')
   html = existing.test(html) ? html.replace(existing, () => tag) : html.replace('  </head>', `    ${tag}\n  </head>`)
 }
+const schema = `<script id="company-identity-schema" type="application/ld+json">${JSON.stringify(getCompanySchema()).replaceAll('<', '\\u003c')}</script>`
+html = /<script id="company-identity-schema"[^>]*>[\s\S]*?<\/script>/.test(html) ? html.replace(/<script id="company-identity-schema"[^>]*>[\s\S]*?<\/script>/, () => schema) : html.replace('  </head>', `    ${schema}\n  </head>`)
 await writeFile(indexPath, html)
 
 const browser = [

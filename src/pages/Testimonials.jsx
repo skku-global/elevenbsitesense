@@ -1,11 +1,8 @@
-import { Info, MessagesSquare } from 'lucide-react'
 import PageIntro from '../components/PageIntro'
-import TestimonialCard from '../components/TestimonialCard'
+import ClientFeedback from '../components/ClientFeedback'
 import ContactCTA from '../components/ContactCTA'
 import Reveal from '../components/Reveal'
 import SEO from '../components/SEO'
-import Button from '../components/Button'
-import { testimonials } from '../data/testimonials'
 import { media } from '../data/media'
 
 export default function Testimonials() {
@@ -13,7 +10,7 @@ export default function Testimonials() {
     <>
       <SEO
         title="The client experience"
-        description="Explore our testimonial presentation with clearly labelled demonstration feedback. Real, approved client testimonials will be added when supplied."
+        description="A place for approved client feedback on ELEVEN B SITE SENSE construction and finishing services. Contact us to share your experience."
       />
       <PageIntro
         eyebrow="THE PEOPLE BEHIND EVERY SPACE"
@@ -26,26 +23,7 @@ export default function Testimonials() {
       <section className="section testimonials-page">
         <div className="container">
           <Reveal>
-            <div className="demo-notice">
-              <Info size={21} strokeWidth={1.4} aria-hidden="true" />
-              <div>
-                <h2>Demonstration feedback, clearly labelled.</h2>
-                <p>The quotes below are sample writing, not statements from real customers. No customer identities or ratings are being claimed. Verified testimonials will be published with the clients’ permission.</p>
-              </div>
-            </div>
-          </Reveal>
-          <div className="testimonials-grid">
-            {testimonials.map((testimonial, index) => <Reveal key={testimonial.id} delay={(index % 3) * 0.06}>
-              <TestimonialCard testimonial={testimonial} />
-            </Reveal>)}
-          </div>
-          <Reveal className="feedback-invitation">
-            <MessagesSquare size={36} strokeWidth={1.2} aria-hidden="true" />
-            <div>
-              <h2>Your experience matters.</h2>
-              <p>Worked with the company? Once our contact channel is configured, you can share your feedback and discuss permission for it to appear here.</p>
-            </div>
-            <Button to="/contact" variant="outline" diagonal>Get in touch</Button>
+            <ClientFeedback />
           </Reveal>
         </div>
       </section>

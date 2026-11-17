@@ -179,6 +179,32 @@ try {
     await screenshot(`brand-header-${width}`)
   }
 
+  for (const route of ['/contact', '/about', '/']) {
+    await navigate(route)
+    const contact = await evaluate(`(() => ({
+      phoneLinks: [...document.querySelectorAll('.company-phone-link')].map(a => a.getAttribute('href')),
+      whatsappLinks: [...document.querySelectorAll('.company-whatsapp-link')].map(a => a.getAttribute('href')),
+      emailLinks: [...document.querySelectorAll('.company-email-link')].map(a => a.getAttribute('href')),
+      address: document.querySelector('.footer-contact .office-address').textContent,
+      schema: JSON.parse(document.querySelector('#company-identity-schema').textContent),
+      slogan: document.querySelector('.topbar span').textContent,
+      quotes: document.querySelectorAll('main .testimonial-card').length,
+    }))()`)
+    for (const phone of ['2348034456275', '2348072791980', '2348124025129']) {
+      assert.ok(contact.phoneLinks.includes(`tel:+${phone}`), `${route}: missing international phone link`)
+      assert.ok(contact.whatsappLinks.some(link => new URL(link).pathname === `/${phone}`), `${route}: missing WhatsApp link`)
+    }
+    assert.ok(contact.emailLinks.includes('mailto:ganiyutaiwo2020@gmail.com'))
+    assert.ok(contact.address.includes('4th Floor, Lister Building, Ring Road,') && contact.address.includes('Ibadan, Oyo State, Nigeria.'))
+    assert.equal(contact.schema.legalName, 'ELEVEN B SITE-SENSE NIGERIA LIMITED')
+    assert.equal(contact.schema.identifier.value, '7650068')
+    assert.equal(contact.schema.email, 'ganiyutaiwo2020@gmail.com')
+    assert.equal(contact.schema.contactPoint.length, 3)
+    assert.equal(contact.slogan, 'WE BUILD IT BETTER.')
+    assert.equal(contact.quotes, 0, 'Unapproved testimonials must never be published')
+  }
+  console.log('Official identity, three phone/WhatsApp numbers, email, address and honest feedback verified.')
+
   await viewport(1440)
   await navigate('/')
   await evaluate(`(() => { window.__originalSiteHeader = document.querySelector('.site-header'); return true; })()`)
@@ -211,7 +237,7 @@ try {
     serviceImageChecks.push({ slug, ...details })
   }
   assert.equal(new Set(serviceImageChecks.map(image => image.src)).size, 8, 'Each service must have its own image.')
-  await writeFile(path.join(output, 'service-image-report.json'), JSON.stringify({ images: serviceImageChecks, photographicAccuracyVerified: false, note: 'External photo downloads are blocked. Subject-specific local illustrations are verified, and photographs require an available approved source.' }, null, 2))
+  await writeFile(path.join(output, 'service-image-report.json'), JSON.stringify({ images: serviceImageChecks, localIllustrationsVerified: true, note: 'All eight services use bundled subject-specific illustrations. These design references are not company project photographs.' }, null, 2))
   console.log('Eight distinct service subjects, loaded previews, and quote links verified.')
   await navigate('/services/pop-ceiling-installation')
   await screenshot('pop-ceiling-desktop')
@@ -257,6 +283,19 @@ try {
   await evaluate(`document.querySelector('form').requestSubmit()`)
   await waitFor(`!!document.querySelector('.form-success')`, 'validated enquiry preview')
   assert.ok((await evaluate(`document.querySelector('.form-success').textContent`)).includes('nothing has been sent'), 'Preview must never claim a real submission.')
+  const sharing = await evaluate(`(() => ({
+    whatsapp: document.querySelector('.form-success a[href^="https://wa.me/"]').getAttribute('href'),
+    email: document.querySelector('.form-success a[href^="mailto:"]').getAttribute('href'),
+  }))()`)
+  const preparedWhatsApp = new URL(sharing.whatsapp)
+  assert.equal(preparedWhatsApp.pathname, '/2348034456275')
+  assert.ok(preparedWhatsApp.searchParams.get('text').includes('Website Check'))
+  assert.ok(preparedWhatsApp.searchParams.get('text').includes('Swimming Pool Construction'))
+  assert.ok(preparedWhatsApp.searchParams.get('text').includes('residential building consultation'))
+  assert.ok(sharing.email.startsWith('mailto:ganiyutaiwo2020@gmail.com?'))
+  const preparedEmail = new URLSearchParams(sharing.email.split('?')[1])
+  assert.ok(preparedEmail.get('subject').includes('Swimming Pool Construction'))
+  assert.equal(preparedEmail.get('body'), preparedWhatsApp.searchParams.get('text'))
   await screenshot('contact-enquiry-preview')
   await evaluate(`[...document.querySelectorAll('.form-success button')].find(button => button.textContent.includes('Edit enquiry')).click()`)
   await waitFor(`!!document.querySelector('form')`, 'edit enquiry')
@@ -267,9 +306,7 @@ try {
   assert.equal(await evaluate(`document.querySelector('#services-dropdown').hidden`), false)
   await command('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape' })
   assert.equal(await evaluate(`document.querySelector('#services-dropdown').hidden`), true)
-  await evaluate(`document.querySelector('.whatsapp-trigger').click()`)
-  await waitFor(`!!document.querySelector('#whatsapp-panel')`, 'WhatsApp fallback contact panel')
-  await command('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape' })
+  assert.ok((await evaluate(`document.querySelector('.whatsapp-trigger').getAttribute('href')`)).startsWith('https://wa.me/2348034456275?text='))
 
   await viewport(375, 812)
   await navigate('/')
@@ -311,7 +348,7 @@ try {
   await evaluate(`document.querySelector('.company-registration').scrollIntoView({ block: 'center', behavior: 'instant' })`)
   await screenshot('company-registration-mobile')
   assert.deepEqual(jsErrors, [], 'Browser JavaScript or React console errors were found.')
-  const report = { passed: true, routeChecks: checked.length, routes: checked, interactions: ['project filters', 'FAQ accordion and keyboard navigation', 'FAQ search and reset', 'required and invalid phone validation', 'honest enquiry preview and editing', 'service preselection', 'desktop dropdown and Escape', 'WhatsApp fallback', 'mobile menu, Escape, submenu and route cleanup', 'local image fallback'], externalAssetFailures: [...externalFailures] }
+  const report = { passed: true, routeChecks: checked.length, routes: checked, interactions: ['official company identity and contacts', 'project filters', 'FAQ accordion and keyboard navigation', 'FAQ search and reset', 'required and invalid phone validation', 'prepared enquiry sharing and editing', 'service preselection', 'desktop dropdown and Escape', 'direct WhatsApp link', 'mobile menu, Escape, submenu and route cleanup', 'local image fallback'], externalAssetFailures: [...externalFailures] }
   await writeFile(path.join(output, 'report.json'), JSON.stringify(report, null, 2))
   console.log(`Passed ${checked.length} route/layout checks and all interaction checks. No JavaScript console errors.`)
   console.log(`Screenshots and report: ${output}`)

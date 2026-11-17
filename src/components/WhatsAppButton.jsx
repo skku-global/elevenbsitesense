@@ -1,7 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
-import { X } from 'lucide-react'
-import Button from './Button'
-import { getWhatsAppUrl } from '../data/company'
+import { company, getWhatsAppUrl } from '../data/company'
 
 function WhatsAppIcon() {
   return <svg
@@ -25,60 +22,18 @@ function WhatsAppIcon() {
 }
 
 export default function WhatsAppButton() {
-  const [open, setOpen] = useState(false)
-  const trigger = useRef(null)
-  const wrapper = useRef(null)
-  const url = getWhatsAppUrl()
-  useEffect(() => {
-    if (!open) return
-    const onKey = (event) => { if (event.key === 'Escape') { setOpen(false); trigger.current?.focus() } }
-    const onOutside = (event) => { if (!wrapper.current?.contains(event.target)) setOpen(false) }
-    document.addEventListener('keydown', onKey)
-    document.addEventListener('pointerdown', onOutside)
-    return () => { document.removeEventListener('keydown', onKey); document.removeEventListener('pointerdown', onOutside) }
-  }, [open])
   return (
-    <div className="whatsapp-widget" ref={wrapper}>
-      {open && <div
-        className="whatsapp-panel"
-        id="whatsapp-panel"
-        role="region"
-        aria-label="WhatsApp contact options"
-      >
-        <button
-          type="button"
-          className="whatsapp-close"
-          aria-label="Close contact options"
-          onClick={() => { setOpen(false); trigger.current?.focus() }}
-        >
-          <X size={19} />
-        </button>
-        <p className="eyebrow">LET’S CONNECT</p>
-        <h2>A great project starts here.</h2>
-        <p>Our WhatsApp number is awaiting confirmation. You can still prepare a project enquiry on our contact page.</p>
-        <Button to="/contact" variant="navy">Prepare an enquiry</Button>
-      </div>}
-      {url ? <a
-        href={url}
+    <div className="whatsapp-widget">
+      <a
+        href={getWhatsAppUrl()}
         className="whatsapp-trigger"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Contact the company on WhatsApp"
+        aria-label={`Chat with ${company.contactPerson} at ${company.brandName} on WhatsApp`}
       >
         <WhatsAppIcon />
         <span className="whatsapp-tooltip">Chat on WhatsApp</span>
-      </a> : <button
-        ref={trigger}
-        type="button"
-        className="whatsapp-trigger"
-        aria-label="WhatsApp contact options"
-        aria-expanded={open}
-        aria-controls="whatsapp-panel"
-        onClick={() => setOpen(!open)}
-      >
-        <WhatsAppIcon />
-        <span className="whatsapp-tooltip">Let’s talk</span>
-      </button>}
+      </a>
     </div>
   )
 }

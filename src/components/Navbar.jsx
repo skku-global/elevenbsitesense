@@ -5,6 +5,7 @@ import Logo from './Logo'
 import Button from './Button'
 import { navigation } from '../data/navigation'
 import { services } from '../data/services'
+import { company } from '../data/company'
 
 export default function Navbar() {
   const { key: locationKey } = useLocation()
@@ -182,7 +183,7 @@ export default function Navbar() {
               <ArrowUpRight size={19} aria-hidden="true" />
             </NavLink>)}
             <Button to="/contact" diagonal>Start a project</Button>
-            <p className="mobile-menu-note">Thoughtful construction. Exceptional finishes.</p>
+            <p className="mobile-menu-note">{company.slogan}</p>
           </nav>
         </div>
       </header>

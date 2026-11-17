@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { company } from '../data/company'
+import { company, getCompanySchema } from '../data/company'
 
 export default function SEO({ title, description, noIndex = false }) {
   const { pathname } = useLocation()
@@ -8,7 +8,7 @@ export default function SEO({ title, description, noIndex = false }) {
     const pageTitle = `${title} | ${company.brandName}`
     const pageDescription = description.includes(company.brandName) ? description : `${company.brandName} — ${description}`
     const socialImage = new URL(company.socialImage, company.websiteUrl || window.location.origin).href
-    const socialImageAlt = `${company.brandName} architectural wordmark. Thoughtful construction. Exceptional finishes.`
+    const socialImageAlt = `${company.brandName} architectural wordmark. ${company.slogan}`
     document.title = pageTitle
     const setMeta = (attribute, name, content) => {
       let element = document.head.querySelector(`meta[${attribute}="${name}"]`)
@@ -43,15 +43,7 @@ export default function SEO({ title, description, noIndex = false }) {
       organization.type = 'application/ld+json'
       document.head.appendChild(organization)
     }
-    organization.textContent = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'Organization',
-      name: company.companyName,
-      legalName: company.companyName,
-      alternateName: company.brandName,
-      identifier: { '@type': 'PropertyValue', propertyID: 'RC', value: company.rcNumber },
-      ...(company.websiteUrl ? { url: company.websiteUrl } : {}),
-    })
+    organization.textContent = JSON.stringify(getCompanySchema())
     let canonical = document.head.querySelector('link[rel="canonical"]')
     if (company.websiteUrl) {
       if (!canonical) {

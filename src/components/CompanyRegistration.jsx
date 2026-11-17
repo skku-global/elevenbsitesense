@@ -1,6 +1,7 @@
 import { company } from '../data/company'
+import OfficeAddress from './OfficeAddress'
 
-export default function CompanyRegistration({ compact = false }) {
+export default function CompanyRegistration({ compact = false, showAddress = false }) {
   return (
     <div className={`company-registration${compact ? ' company-registration--compact' : ''}`}>
       <div className="company-registration-heading">
@@ -21,6 +22,10 @@ export default function CompanyRegistration({ compact = false }) {
           <dd><span className="registration-status">{company.registrationStatus}</span></dd>
         </div>
       </dl>
+      {showAddress && <div className="registration-office">
+        <p className="small-label">OUR OFFICE</p>
+        <OfficeAddress />
+      </div>}
     </div>
   )
 }

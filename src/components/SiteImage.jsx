@@ -6,6 +6,7 @@ function ImageContent({ src, alt, className = '', eager = false, position, fallb
   const [failed, setFailed] = useState(!src || src === fallbackSrc)
   const [unavailable, setUnavailable] = useState(false)
   const showCaption = Boolean(caption || (failed && fallbackSrc !== imageFallback))
+  const primaryIllustration = src === fallbackSrc
 
   const handleError = () => {
     if (!failed) { setLoaded(false); setFailed(true) }
@@ -24,7 +25,7 @@ function ImageContent({ src, alt, className = '', eager = false, position, fallb
         onError={handleError}
         {...props}
       />}
-      {showCaption && <span className="image-caption">{failed ? `${fallbackLabel} · Photo unavailable` : caption}</span>}
+      {showCaption && <span className="image-caption">{failed ? `${fallbackLabel} · ${primaryIllustration ? 'Design reference' : 'Photo unavailable'}` : caption}</span>}
     </span>
   )
 }

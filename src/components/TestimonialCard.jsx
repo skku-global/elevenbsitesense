@@ -5,7 +5,7 @@ export default function TestimonialCard({ testimonial }) {
     <article className="testimonial-card">
       <div className="testimonial-card-top">
         <Quote size={28} strokeWidth={1.2} aria-hidden="true" />
-        <span className="sample-label">Demonstration</span>
+        <span className="sample-label">Client feedback</span>
       </div>
       <blockquote>
         <p>

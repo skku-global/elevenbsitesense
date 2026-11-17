@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { Suspense } from 'react'
 import AnnouncementBar from './AnnouncementBar'
 import Navbar from './Navbar'
@@ -10,7 +10,6 @@ import PageLoading from './PageLoading'
 // All routes share this one layout. Pages render only through Outlet.
 // The header remains mounted across navigation; it is never keyed by the route.
 export default function SiteLayout() {
-  const { pathname } = useLocation()
   return (
     <>
       <ScrollToTop />
@@ -23,7 +22,7 @@ export default function SiteLayout() {
         </Suspense>
       </main>
       <Footer />
-      <WhatsAppButton key={`whatsapp-${pathname}`} />
+      <WhatsAppButton />
     </>
   )
 }

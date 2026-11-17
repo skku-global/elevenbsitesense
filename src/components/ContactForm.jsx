@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { Check, CheckCircle2, Download, Info, LoaderCircle, RotateCcw, Send } from 'lucide-react'
+import { Check, CheckCircle2, Download, Info, LoaderCircle, Mail, MessageCircle, RotateCcw, Send } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import Button from './Button'
-import { company } from '../data/company'
+import { company, getEmailUrl, getWhatsAppUrl } from '../data/company'
 import { getService, services } from '../data/services'
 import { getProject } from '../data/projects'
 
@@ -77,9 +77,13 @@ export default function ContactForm() {
     }
   }
 
-  const download = () => {
+  const enquiryText = () => {
     const service = getService(values.service)?.title || 'Multiple services / not sure yet'
-    const contents = `${company.companyName}\nRC ${company.rcNumber}\nPROJECT ENQUIRY — PERSONAL COPY\n\nThis is a prepared enquiry. It has not been sent to the company.\n\nName: ${values.name.trim()}\nEmail: ${values.email.trim()}\nPhone: ${values.phone.trim() || 'Not supplied'}\nService: ${service}\n\nProject details:\n${values.message.trim()}\n`
+    return `Hello ${company.contactPerson},\nI would like to discuss a project with ${company.brandName}.\n\nName: ${values.name.trim()}\nEmail: ${values.email.trim()}\nPhone: ${values.phone.trim() || 'Not supplied'}\nService: ${service}\n\nProject details:\n${values.message.trim()}\n`
+  }
+
+  const download = () => {
+    const contents = `${company.companyName}\nRC ${company.rcNumber}\nPROJECT ENQUIRY — PERSONAL COPY\n\nThis is a prepared enquiry. It has not been sent to the company.\n\n${enquiryText()}`
     const url = URL.createObjectURL(new Blob([contents], { type: 'text/plain;charset=utf-8' }))
     const link = document.createElement('a')
     link.href = url
@@ -114,7 +118,7 @@ export default function ContactForm() {
           {status === 'preview' ? 'Your project brief is ready.' : 'Thank you. Your enquiry has been sent.'}
         </h3>
         <p>
-          {status === 'preview' ? 'Your details have been validated. This preview is not connected to a company inbox, so nothing has been sent. Download a personal copy of your enquiry to keep or share once verified contact details are available.' : 'Your enquiry was accepted by our submission service. The company can use the contact details you supplied to discuss the next steps.'}
+          {status === 'preview' ? 'Your details are ready; nothing has been sent yet. Open your enquiry in WhatsApp or your email app, review it and press Send there. You can also download a personal copy.' : 'Your enquiry was accepted by our submission service. The company can use the contact details you supplied to discuss the next steps.'}
         </p>
         <dl className="enquiry-summary">
           <div>
@@ -143,7 +147,11 @@ export default function ContactForm() {
           </div>}
         </dl>
         <div className="form-success-actions">
-          {status === 'preview' && <Button variant="navy" icon={false} onClick={download}><Download size={16} aria-hidden="true" />Download enquiry</Button>}
+          {status === 'preview' && <>
+            <Button href={getWhatsAppUrl(enquiryText())} target="_blank" rel="noopener noreferrer" variant="navy" icon={false}><MessageCircle size={16} aria-hidden="true" />Open in WhatsApp</Button>
+            <Button href={getEmailUrl(`Project enquiry — ${getService(values.service)?.title || 'Multiple services'}`, enquiryText())} variant="outline" icon={false}><Mail size={16} aria-hidden="true" />Open in email</Button>
+            <Button variant="outline" icon={false} onClick={download}><Download size={16} aria-hidden="true" />Download enquiry</Button>
+          </>}
           {status === 'preview' ? <Button variant="outline" icon={false} onClick={() => setStatus('idle')}>Edit enquiry</Button> : <Button variant="outline" icon={false} onClick={reset}><RotateCcw size={16} aria-hidden="true" />Start another enquiry</Button>}
         </div>
         {status === 'preview' && <button type="button" className="reset-enquiry" onClick={reset}>Start a new enquiry</button>}
@@ -158,7 +166,7 @@ export default function ContactForm() {
       >
         {!live && <div className="form-mode-note">
           <Info size={17} aria-hidden="true" />
-          <p><strong>Enquiry preview.</strong> Our submission channel is being configured. You can validate your details and download a copy; this form will not send a message yet.</p>
+          <p><strong>Prepare your project brief.</strong> Review your details, then open the brief in WhatsApp or your email app to send it to {company.contactPerson}.</p>
         </div>}
         {status === 'error' && <p className="form-feedback form-feedback--error" role="alert">
           {feedback}
@@ -280,7 +288,7 @@ export default function ContactForm() {
             <p><Check size={13} aria-hidden="true" />Used only to discuss your enquiry.</p>
           </div>
         </fieldset>
-        <p className="form-required-note">Fields marked * are required. Your entries stay in this page until you submit or download them.</p>
+        <p className="form-required-note">Fields marked * are required. {live ? 'Your details are sent when you submit.' : 'Your details stay on this page until you choose a sharing or download option.'}</p>
       </form>
       )}
     </div>

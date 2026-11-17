@@ -1,4 +1,4 @@
-import { ArrowUpRight, Clock3, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
+import { ArrowUpRight, MessageCircle } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import PageIntro from '../components/PageIntro'
 import ContactForm from '../components/ContactForm'
@@ -7,7 +7,9 @@ import SiteImage from '../components/SiteImage'
 import Reveal from '../components/Reveal'
 import SEO from '../components/SEO'
 import CompanyRegistration from '../components/CompanyRegistration'
-import { company, contactPlaceholders, getWhatsAppUrl } from '../data/company'
+import CompanyContactDetails from '../components/CompanyContactDetails'
+import OfficeAddress from '../components/OfficeAddress'
+import { company, getWhatsAppUrl } from '../data/company'
 import { media } from '../data/media'
 
 export default function Contact() {
@@ -31,57 +33,14 @@ export default function Contact() {
             <p className="eyebrow">A PERSONAL CONVERSATION</p>
             <h2>Every great space<br />starts with a hello.</h2>
             <p>Tell us about your project, where it is, and what matters most to you. Your enquiry helps us understand the right next step.</p>
-            <div className="contact-details">
-              <div className="contact-item">
-                <Phone size={20} strokeWidth={1.3} aria-hidden="true" />
-                <div>
-                  <h3>Call us</h3>
-                  {company.phone ? <a href={`tel:${company.phone.replace(/[^+\d]/g, '')}`}>
-                    {company.phone}
-                  </a> : <p className="contact-placeholder">
-                    {contactPlaceholders.phone}
-                  </p>}
-                </div>
-              </div>
-              <div className="contact-item">
-                <Mail size={20} strokeWidth={1.3} aria-hidden="true" />
-                <div>
-                  <h3>Email us</h3>
-                  {company.email ? <a href={`mailto:${company.email}`}>
-                    {company.email}
-                  </a> : <p className="contact-placeholder">
-                    {contactPlaceholders.email}
-                  </p>}
-                </div>
-              </div>
-              <div className="contact-item">
-                <MapPin size={21} strokeWidth={1.3} aria-hidden="true" />
-                <div>
-                  <h3>Our location</h3>
-                  <p className={!company.address ? 'contact-placeholder' : ''}>
-                    {company.address || contactPlaceholders.address}
-                  </p>
-                  <small>
-                    {company.serviceArea || contactPlaceholders.serviceArea}
-                  </small>
-                </div>
-              </div>
-              <div className="contact-item">
-                <Clock3 size={20} strokeWidth={1.3} aria-hidden="true" />
-                <div>
-                  <h3>Office hours</h3>
-                  <p className={!company.officeHours ? 'contact-placeholder' : ''}>
-                    {company.officeHours || contactPlaceholders.officeHours}
-                  </p>
-                </div>
-              </div>
-            </div>
+            <CompanyContactDetails />
+            {company.officeHours && <p>Office hours: {company.officeHours}</p>}
             <CompanyRegistration compact />
             <div className="contact-whatsapp">
               <MessageCircle size={25} strokeWidth={1.3} aria-hidden="true" />
               <h3>Prefer a conversation on WhatsApp?</h3>
               <p>
-                {whatsappUrl ? 'Share your project ideas with us directly through our configured WhatsApp contact.' : 'Our WhatsApp contact is awaiting confirmation. You can prepare your enquiry using the form.'}
+                Share your project ideas, drawings or photographs with {company.contactPerson} and discuss the next step.
               </p>
               {whatsappUrl ? <Button
                 href={whatsappUrl}
@@ -109,11 +68,10 @@ export default function Contact() {
             />
           </div>
           <div>
-            <p className="eyebrow">A SPACE THAT WORKS FOR YOU</p>
-            <h2>Your location.<br />Your possibilities.</h2>
-            <p>
-              {company.serviceArea ? `Our service area: ${company.serviceArea}. Tell us where your project is so we can discuss the details.` : 'Our service locations are being confirmed. Include your project location in your enquiry so that availability, access, and logistics can be discussed.'}
-            </p>
+            <p className="eyebrow">OUR OFFICE IN IBADAN</p>
+            <h2>Start the conversation.<br />Plan the possibilities.</h2>
+            <OfficeAddress />
+            <p>Contact {company.contactPerson} to arrange a visit. Include your project location so we can discuss availability, site access and logistics.</p>
             <span className="image-reference-note">Architectural inspiration · Stock photograph</span>
           </div>
         </div>

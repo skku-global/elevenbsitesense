@@ -4,16 +4,16 @@ import Button from '../components/Button'
 import SectionHeading from '../components/SectionHeading'
 import ServiceCard from '../components/ServiceCard'
 import ProjectCard from '../components/ProjectCard'
-import TestimonialCard from '../components/TestimonialCard'
+import ClientFeedback from '../components/ClientFeedback'
+import OfficeAddress from '../components/OfficeAddress'
 import SiteImage from '../components/SiteImage'
 import ContactCTA from '../components/ContactCTA'
 import Reveal from '../components/Reveal'
 import SEO from '../components/SEO'
-import { company, companyFacts } from '../data/company'
+import { company } from '../data/company'
 import { media } from '../data/media'
 import { services } from '../data/services'
 import { projects } from '../data/projects'
-import { testimonials } from '../data/testimonials'
 
 const promises = [
   { Icon: Ruler, title: 'Precision in every detail', text: 'A considered approach to every stage.' },
@@ -42,8 +42,8 @@ export default function Home() {
         <div className="container home-hero-inner">
           <Reveal className="hero-copy">
             <p className="eyebrow eyebrow--light">EXPERTISE FROM FOUNDATION TO FINISH</p>
-            <h1 id="home-heading">Your vision.<br />Built <em>beautifully.</em></h1>
-            <p className="hero-description">Thoughtful construction. Exceptional finishes.<br className="desktop-break" /> Creating spaces you’ll be proud to call your own.</p>
+            <h1 id="home-heading">We Build It<br /><em>Better.</em></h1>
+            <p className="hero-description">{company.descriptionShort}</p>
             <div className="hero-actions">
               <Button to="/services">Explore Our Services</Button>
               <Button to="/contact" variant="white-outline" diagonal>Contact Us</Button>
@@ -53,7 +53,7 @@ export default function Home() {
             <a href="#our-services" className="hero-scroll"><span className="hero-scroll-icon">
                 <ArrowDown size={18} strokeWidth={1.5} aria-hidden="true" />
               </span>DISCOVER THE POSSIBILITIES</a>
-            <p>ARCHITECTURAL INSPIRATION<span>Illustrative stock photography</span></p>
+            <p>ARCHITECTURAL INSPIRATION<span>Illustrative design reference</span></p>
           </div>
         </div>
         <span className="hero-side-label" aria-hidden="true">THE ART OF BUILDING WELL</span>
@@ -84,19 +84,10 @@ export default function Home() {
               <Link className="text-link" to="/services">View all services <ArrowUpRight size={17} aria-hidden="true" /></Link>
             </SectionHeading>
           </Reveal>
-          <div className="services-grid">
-            {services.slice(0, 4).map((service, index) => <Reveal key={service.slug} delay={index * 0.06}>
+          <div className="services-grid services-grid--full">
+            {services.map((service, index) => <Reveal key={service.slug} delay={(index % 4) * 0.06}>
               <ServiceCard service={service} index={index} />
             </Reveal>)}
-          </div>
-          <div className="more-expertise">
-            <p>AND THE DETAILS<br />THAT COMPLETE IT</p>
-            <div>
-              {services.slice(4).map((service) => <Link to={`/services/${service.slug}`} key={service.slug}>
-                {service.title}
-                <ArrowUpRight size={16} aria-hidden="true" />
-              </Link>)}
-            </div>
           </div>
         </div>
       </section>
@@ -117,28 +108,15 @@ export default function Home() {
           <Reveal className="home-about-copy">
             <p className="eyebrow">02 / A BETTER WAY TO BUILD</p>
             <h2>Great spaces start<br />with a clear vision.</h2>
-            <p>At {company.brandName}, we believe the best spaces are built through thoughtful planning, open conversation, and care for the details.</p>
-            <p>From the structure that supports your home to the finishes you see and feel every day, we bring a coordinated approach to construction and design.</p>
+            <p>{company.descriptionShort}</p>
+            <p>{company.mission}</p>
             <ul className="check-list">
-              <li><Check size={16} aria-hidden="true" />A clear scope and considered material choices</li>
-              <li><Check size={16} aria-hidden="true" />Construction and finishing, planned together</li>
-              <li><Check size={16} aria-hidden="true" />A personal approach to your project</li>
+              {company.strengths.slice(0, 3).map((strength) => <li key={strength}><Check size={16} aria-hidden="true" />{strength}</li>)}
             </ul>
             <Button to="/about" variant="outline" diagonal>Discover our approach</Button>
             <div className="company-facts">
               <p className="company-registration-summary">Registered in Nigeria <span aria-hidden="true">·</span> <Link to="/about">RC {company.rcNumber}<ArrowUpRight size={13} aria-hidden="true" /></Link></p>
-              <p className="company-facts-label">PROJECT & TEAM DETAILS · AWAITING VERIFICATION</p>
-              <div className="company-facts-grid">
-                {companyFacts.map((fact) => <div key={fact.label}>
-                  <strong>
-                    {fact.value ?? '—'}
-                  </strong>
-                  <span>
-                    {fact.label}
-                  </span>
-                  {fact.value === null && <small>To be supplied</small>}
-                </div>)}
-              </div>
+              <OfficeAddress />
             </div>
           </Reveal>
         </div>
@@ -151,7 +129,7 @@ export default function Home() {
               title={<>A sense of<br />what’s possible.</>}
               description="Considered architecture, inviting interiors, and inspiring outdoor spaces. Explore a few ideas for your next chapter."
             >
-              <Link className="text-link" to="/projects">Explore the portfolio <ArrowUpRight size={17} aria-hidden="true" /></Link>
+              <Link className="text-link" to="/projects">Explore the concepts <ArrowUpRight size={17} aria-hidden="true" /></Link>
             </SectionHeading>
           </Reveal>
           <p className="demonstration-note"><span>DEMONSTRATION PORTFOLIO</span> These concepts use stock imagery and do not represent completed company projects.</p>
@@ -173,12 +151,7 @@ export default function Home() {
               <Link className="text-link" to="/testimonials">View testimonials <ArrowUpRight size={17} aria-hidden="true" /></Link>
             </SectionHeading>
           </Reveal>
-          <p className="demonstration-note"><span>SAMPLE FEEDBACK</span> Demonstration writing only. Verified client testimonials will be added with permission.</p>
-          <div className="testimonials-grid">
-            {testimonials.slice(0, 3).map((testimonial, index) => <Reveal key={testimonial.id} delay={index * 0.05}>
-              <TestimonialCard testimonial={testimonial} />
-            </Reveal>)}
-          </div>
+          <ClientFeedback />
         </div>
       </section>
       <ContactCTA />

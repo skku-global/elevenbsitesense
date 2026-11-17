@@ -6,7 +6,7 @@ import ContactCTA from '../components/ContactCTA'
 import Reveal from '../components/Reveal'
 import SEO from '../components/SEO'
 import CompanyRegistration from '../components/CompanyRegistration'
-import { company, companyFacts } from '../data/company'
+import { company } from '../data/company'
 import { media } from '../data/media'
 
 const values = [
@@ -32,7 +32,7 @@ export default function About() {
       <PageIntro
         eyebrow="A COMPANY BUILT AROUND YOUR VISION"
         title={<>Purpose in the plan.<br /><em>Care in the craft.</em></>}
-        description="Thoughtful buildings. Beautiful finishes. A considered approach to the spaces that matter to you."
+        description={company.descriptionShort}
         image={media.construction}
         alt="Construction professionals coordinating work on a building site"
         breadcrumbs={[{ label: 'About us' }]}
@@ -45,13 +45,11 @@ export default function About() {
               <h2>Building is about more<br />than a finished structure.</h2>
             </Reveal>
             <Reveal className="prose">
-              <p>It is about creating a place that feels right for the people who use it. At {company.companyName}, our focus brings together practical construction and the finishing details that give a space its character.</p>
-              <p>Our service range spans general building, swimming pools, P.O.P. ceilings, interiors and artwork, tiling, paving, stamped finishes, and painting. Whether you are starting from the ground up or rethinking an existing space, we help connect the different parts of your vision.</p>
-              <p>We believe in defining the brief clearly, selecting materials with purpose, and keeping design decisions connected to the realities of the build.</p>
+              {company.description.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             </Reveal>
           </div>
           <Reveal>
-            <CompanyRegistration />
+            <CompanyRegistration showAddress />
           </Reveal>
         </div>
       </section>
@@ -61,14 +59,14 @@ export default function About() {
             <Reveal className="mission-card">
               <span className="large-index">01</span>
               <p className="eyebrow">OUR MISSION</p>
-              <h2>Make your vision<br />a place to live.</h2>
-              <p>To bring construction, design, and finishing together through thoughtful planning and careful execution, creating spaces that serve their purpose beautifully.</p>
+              <h2>Build relationships.<br />Bring visions to life.</h2>
+              <p>{company.mission}</p>
             </Reveal>
             <Reveal className="mission-card" delay={0.08}>
               <span className="large-index">02</span>
-              <p className="eyebrow">OUR VISION</p>
-              <h2>Build better.<br />Finish thoughtfully.</h2>
-              <p>To be a trusted choice for people who value a considered approach to their property, where clear communication and attention to detail shape every stage.</p>
+              <p className="eyebrow">OUR VISION & GOAL</p>
+              <h2>Excellence that<br />adds lasting value.</h2>
+              <p>{company.goal}</p>
             </Reveal>
           </div>
         </div>
@@ -106,29 +104,12 @@ export default function About() {
             />
           </Reveal>
           <Reveal className="about-why-copy">
-            <p className="eyebrow">WHY CHOOSE OUR APPROACH</p>
-            <h2>One vision.<br />A world of considered details.</h2>
-            <p>A project works best when its many parts work together. Our range of construction and finishing services helps you approach the whole space with a clear direction.</p>
+            <p className="eyebrow">WHY CHOOSE US</p>
+            <h2>Skilled people.<br />Considered construction.</h2>
+            <p>Our strengths connect practical building expertise with thoughtful design, quality materials, and a flexible approach to your project.</p>
             <ul className="check-list">
-              <li><Check size={17} aria-hidden="true" />Coordinated building and finishing services</li>
-              <li><Check size={17} aria-hidden="true" />Material choices discussed around your priorities</li>
-              <li><Check size={17} aria-hidden="true" />A clearly defined scope before work begins</li>
-              <li><Check size={17} aria-hidden="true" />Attention to function as well as appearance</li>
+              {company.strengths.map((strength) => <li key={strength}><Check size={17} aria-hidden="true" />{strength}</li>)}
             </ul>
-            <div className="company-facts">
-              <p className="company-facts-label">PROJECT & TEAM DETAILS · AWAITING VERIFIED INFORMATION</p>
-              <div className="company-facts-grid">
-                {companyFacts.map((fact) => <div key={fact.label}>
-                  <strong>
-                    {fact.value ?? '—'}
-                  </strong>
-                  <span>
-                    {fact.label}
-                  </span>
-                  {fact.value === null && <small>To be supplied</small>}
-                </div>)}
-              </div>
-            </div>
           </Reveal>
         </div>
       </section>
