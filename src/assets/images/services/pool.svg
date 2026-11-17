@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs><linearGradient id="water" x2="0" y2="1"><stop stop-color="#78aeb4"/><stop offset="1" stop-color="#3e7b8b"/></linearGradient><pattern id="ripples" width="110" height="75" patternUnits="userSpaceOnUse"><path d="M0 30q28-14 56 0t56 0M25 60q28-14 56 0t56 0" fill="none" stroke="#d6efea" stroke-opacity=".45" stroke-width="2"/></pattern></defs>
+  <rect width="1200" height="900" fill="#e8e6dc"/><rect width="1200" height="240" fill="#c7d3c3"/>
+  <path d="M0 225h1200v110H0Z" fill="#e0ddd0"/>
+  <path d="m188 322 715-25 240 519-1133 39Z" fill="#f9f6eb"/>
+  <path d="m215 345 665-21 202 468-1024 31Z" fill="url(#water)"/>
+  <path d="m215 345 665-21 202 468-1024 31Z" fill="url(#ripples)"/>
+  <path d="m215 345 665-21 202 468" stroke="#c2d5cf" stroke-width="10" fill="none"/>
+  <g fill="#768773"><ellipse cx="60" cy="176" rx="74" ry="155"/><ellipse cx="1110" cy="140" rx="82" ry="170"/><ellipse cx="930" cy="162" rx="54" ry="98"/></g>
+  <g fill="#f5f0df" stroke="#d7d1bf" stroke-width="3"><path d="m380 225 90-4 53 54-99 4Z"/><path d="m560 220 90-4 53 54-99 4Z"/></g>
+  <path d="M989 458v-112q0-22-20-18v104m54 101V381q0-22-20-18v98" fill="none" stroke="#c3ccc8" stroke-width="8"/>
+  <path d="M988 419h36m-33 36h44m-39 8h35" stroke="#c3ccc8" stroke-width="6"/>
+  <g stroke="#ccc8bb" stroke-width="2"><path d="M0 355h166M0 470h120m1000-115h80m-57 144h57M0 890l1200-34"/></g>
+</svg>

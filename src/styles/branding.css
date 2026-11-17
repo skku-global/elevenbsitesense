@@ -1,0 +1,230 @@
+/* Official wordmark and company registration details. */
+.brand {
+  gap: 10px;
+  min-width: 0;
+}
+
+.brand-mark {
+  width: 38px;
+  height: 44px;
+}
+
+.brand-wordmark strong {
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: 0.045em;
+  white-space: nowrap;
+}
+
+.brand-wordmark > span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--gold-dark);
+  font-size: 7.5px;
+  line-height: 1.2;
+  letter-spacing: 0.24em;
+  margin-top: 8px;
+}
+
+.brand-wordmark > span::before {
+  content: '';
+  width: 17px;
+  height: 1px;
+  background: currentColor;
+}
+
+.brand--light .brand-wordmark > span {
+  color: var(--gold-light);
+}
+
+.footer-brand .brand-wordmark strong {
+  font-size: 17px;
+}
+
+.footer-grid > div {
+  min-width: 0;
+}
+
+.footer-brand .footer-registration {
+  color: var(--gold-light);
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 19px;
+  letter-spacing: 0.04em;
+}
+
+.footer-registration > span {
+  display: block;
+  color: #c1cbd0;
+  font-size: 9px;
+  letter-spacing: 0;
+  margin-top: 3px;
+}
+
+.footer-bottom > p:first-child {
+  max-width: 580px;
+  line-height: 1.8;
+}
+
+.company-registration {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  align-items: center;
+  gap: 48px;
+  padding: 32px;
+  margin-top: 45px;
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--gold);
+  background: var(--paper);
+}
+
+.company-registration-heading .eyebrow {
+  font-size: 8px;
+  margin-bottom: 12px;
+}
+
+.company-registration-heading h3 {
+  font-size: 18px;
+  font-weight: 550;
+  line-height: 1.55;
+  letter-spacing: 0.035em;
+  max-width: 36ch;
+}
+
+.registration-details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin: 0;
+}
+
+.registration-details dt {
+  color: var(--text);
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.registration-details dd {
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.registration-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.registration-status::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  background: var(--gold-dark);
+  border-radius: 50%;
+}
+
+.company-registration--compact {
+  display: block;
+  padding: 25px;
+  margin-top: 32px;
+}
+
+.company-registration--compact .company-registration-heading h3 {
+  font-size: 14px;
+}
+
+.company-registration--compact .registration-details {
+  margin-top: 23px;
+  gap: 16px;
+}
+
+.company-registration--compact .registration-details dd {
+  font-size: 11px;
+}
+
+.company-registration-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  font-size: 11px;
+  color: var(--navy);
+  margin-bottom: 22px;
+}
+
+.company-registration-summary a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--gold-dark);
+}
+
+@media (max-width: 1250px) {
+  .brand-wordmark strong {
+    font-size: 17px;
+  }
+
+  .brand-mark {
+    width: 34px;
+  }
+}
+
+@media (max-width: 850px) {
+  .company-registration {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+@media (max-width: 700px) {
+  .brand {
+    gap: 8px;
+  }
+
+  .brand-mark {
+    width: 30px;
+    height: 38px;
+  }
+
+  .brand-wordmark strong {
+    font-size: 14.5px;
+    letter-spacing: 0.035em;
+  }
+
+  .brand-wordmark > span {
+    font-size: 7px;
+    gap: 7px;
+    letter-spacing: 0.2em;
+    margin-top: 7px;
+  }
+
+  .brand-wordmark > span::before {
+    width: 13px;
+  }
+
+  .footer-brand .brand-wordmark strong {
+    font-size: 16px;
+  }
+
+  .company-registration {
+    padding: 24px 22px;
+    margin-top: 35px;
+  }
+
+  .company-registration-heading h3 {
+    font-size: 16px;
+  }
+
+  .registration-details {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 18px;
+  }
+}

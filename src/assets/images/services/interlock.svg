@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs><pattern id="pavers" width="180" height="180" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="180" height="180" fill="#90938a"/><g stroke="#8a8f85" stroke-width="5"><path d="M2 2h116v56H2Z" fill="#c2bba8"/><path d="M122 2h56v116h-56Z" fill="#d8cdb7"/><path d="M62 122h116v56H62Z" fill="#b5b6a6"/><path d="M2 62h56v116H2Z" fill="#d0c7b1"/><path d="M62 62h56v56H62Z" fill="#bbb5a5"/></g><g stroke="#eee8d8" stroke-opacity=".4"><path d="M8 8h100m21 0v100M69 129h100M9 68v100"/></g></pattern></defs>
+  <rect width="1200" height="900" fill="#e9e4d8"/><rect width="1200" height="900" fill="url(#pavers)"/>
+  <path d="M0 0h190L78 900H0Z" fill="#7f927b"/><path d="M179 0h42L109 900H67Z" fill="#ddd5c0"/><path d="M1038 0h45l112 900h-45Z" fill="#ddd5c0"/><path d="M1083 0h117v900h-5Z" fill="#829078"/>
+  <g fill="#647d62"><ellipse cx="89" cy="117" rx="93" ry="102"/><ellipse cx="52" cy="406" rx="81" ry="120"/><ellipse cx="1146" cy="201" rx="86" ry="108"/><ellipse cx="1180" cy="632" rx="91" ry="146"/></g>
+  <path d="M283 900 395 0m426 900L709 0" stroke="#59665b" stroke-width="1" opacity=".13"/>
+</svg>

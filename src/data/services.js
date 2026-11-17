@@ -1,0 +1,118 @@
+import { serviceMedia } from './serviceMedia'
+
+export const services = [
+  {
+    slug: 'general-building-contracting', title: 'General Building Contracting', shortTitle: 'Building construction', category: 'Construction',
+    ...serviceMedia.construction,
+    description: 'From the first foundation to the final detail, a considered approach to building your vision.',
+    introduction: 'A well-built space begins with a clear plan. Our general building service brings the different stages of a construction project together, with attention to practical design, material selection, site coordination, and the details that make a building work beautifully.',
+    benefits: [
+      { title: 'One coordinated plan', text: 'A clear scope that connects the structure, services, and finishing work.' },
+      { title: 'Buildability from the outset', text: 'Practical input on drawings, site conditions, and the construction sequence.' },
+      { title: 'Materials chosen with purpose', text: 'Options discussed against your budget, intended use, and maintenance needs.' },
+      { title: 'A considered handover', text: 'Final inspections, agreed snagging, and a walkthrough of your finished space.' },
+    ],
+    process: ['Discuss your brief, site, drawings, and priorities.', 'Define the scope, construction plan, and itemised quotation.', 'Coordinate the build with agreed milestones and progress updates.', 'Inspect the finished work and complete the agreed handover.'],
+    related: ['swimming-pool-construction', 'pop-ceiling-installation', 'tiling'],
+  },
+  {
+    slug: 'swimming-pool-construction', title: 'Swimming Pool Construction', shortTitle: 'Swimming pools', category: 'Outdoor living',
+    ...serviceMedia.pool,
+    description: 'Beautifully planned pools that bring a new dimension to your outdoor living space.',
+    introduction: 'A swimming pool should feel like a natural extension of your property. We help shape the layout, structure, waterproofing, finishes, and equipment requirements around how you want to enjoy the space, from a quiet family retreat to an elegant entertaining area.',
+    benefits: [
+      { title: 'Designed for your setting', text: 'Pool proportions considered alongside access, landscaping, and daily use.' },
+      { title: 'A complete technical scope', text: 'Structure, circulation, filtration, and waterproofing planned together.' },
+      { title: 'Finishes with character', text: 'Explore appropriate pool tiles, coping, lighting, and surrounding surfaces.' },
+      { title: 'Care beyond installation', text: 'Operating instructions and maintenance requirements discussed before handover.' },
+    ],
+    process: ['Review your site, intended use, dimensions, and access.', 'Agree the pool design, equipment specification, and quotation.', 'Complete excavation, structure, plumbing, waterproofing, and finishes.', 'Test the installation and walk through operation and maintenance.'],
+    related: ['tiling', 'interlock-paving', 'general-building-contracting'],
+  },
+  {
+    slug: 'pop-ceiling-installation', title: 'P.O.P. Ceiling Installation', shortTitle: 'P.O.P. ceilings', category: 'Interior finishing',
+    ...serviceMedia.ceiling,
+    description: 'Elegant ceiling designs, crisp lines, and thoughtful integration of light and space.',
+    introduction: 'The ceiling is an essential part of a room’s character. Our plaster of Paris ceiling service helps you create a refined finish, from simple recessed details to carefully composed feature ceilings, with lighting and service access considered early in the design.',
+    benefits: [
+      { title: 'A balanced design', text: 'Ceiling details that complement the room’s proportions and interior style.' },
+      { title: 'Lighting considered early', text: 'Layouts coordinated with electrical points, recessed fittings, and ambient light.' },
+      { title: 'Careful surface preparation', text: 'Attention to jointing, alignment, and the final surface before painting.' },
+      { title: 'Practical detailing', text: 'Room conditions and necessary access points reviewed in the specification.' },
+    ],
+    process: ['Measure the room and discuss your style and lighting preferences.', 'Develop the ceiling layout and confirm the installation scope.', 'Coordinate supports, profiles, installation, and electrical provisions.', 'Complete surface finishing and inspect the final ceiling.'],
+    related: ['artwork-and-interior-design', 'painting', 'tiling'],
+  },
+  {
+    slug: 'artwork-and-interior-design', title: 'Artwork and Interior Design', shortTitle: 'Interiors & artwork', category: 'Interior design',
+    ...serviceMedia.interior,
+    description: 'Thoughtful interiors and distinctive artwork that make a space feel entirely your own.',
+    introduction: 'Good interiors are personal, functional, and beautifully composed. We work with your ideas to develop a cohesive direction for colours, materials, decorative finishes, and artwork, so that every choice contributes to a space you enjoy spending time in.',
+    benefits: [
+      { title: 'Your style, clearly expressed', text: 'A design direction built around your taste, everyday needs, and existing space.' },
+      { title: 'A cohesive material palette', text: 'Colours, finishes, and decorative elements considered as a complete composition.' },
+      { title: 'Artwork with intention', text: 'Feature treatments and artwork planned for the scale and character of each room.' },
+      { title: 'Design that works in practice', text: 'Budget, availability, installation, and maintenance included in the conversation.' },
+    ],
+    process: ['Explore your inspiration, rooms, requirements, and budget.', 'Create a design direction with selected colours and materials.', 'Confirm the scope and coordinate the agreed finishing work.', 'Style and review the space against the approved direction.'],
+    related: ['pop-ceiling-installation', 'painting', 'tiling'],
+  },
+  {
+    slug: 'tiling', title: 'Tiling', shortTitle: 'Precision tiling', category: 'Interior finishing',
+    ...serviceMedia.tiling,
+    description: 'Beautiful surfaces, precise alignment, and the right finish for every room.',
+    introduction: 'Beautiful tiling relies on what sits beneath the surface as much as the tile itself. We consider preparation, setting-out, adhesive selection, joints, and finishing details to create floors and walls that suit the room and its use.',
+    benefits: [
+      { title: 'The right tile for the space', text: 'Material, size, slip resistance, and cleaning needs discussed before installation.' },
+      { title: 'Thoughtful setting-out', text: 'Layouts planned to balance cut tiles, transitions, focal points, and symmetry.' },
+      { title: 'Prepared from the base', text: 'Surface conditions, levels, and wet-area requirements reviewed in the scope.' },
+      { title: 'A careful final finish', text: 'Attention to grout lines, junctions, edge treatments, and appearance.' },
+    ],
+    process: ['Inspect the surface and review tile and grout choices.', 'Agree the layout, preparation requirements, and quotation.', 'Prepare the base, set out the tiles, and complete installation.', 'Grout, clean, and inspect the finished surface.'],
+    related: ['swimming-pool-construction', 'painting', 'artwork-and-interior-design'],
+  },
+  {
+    slug: 'interlock-paving', title: 'Interlock Paving', shortTitle: 'Interlock paving', category: 'Exterior finishing',
+    ...serviceMedia.interlock,
+    description: 'Well-planned driveways, walkways, and outdoor surfaces with enduring appeal.',
+    introduction: 'Your approach and outdoor surfaces set the tone for the whole property. Our interlock paving service considers ground preparation, load requirements, drainage, edging, and pattern selection to create a practical and welcoming exterior.',
+    benefits: [
+      { title: 'Planned for daily use', text: 'Specifications discussed for pedestrian areas, driveways, or mixed use.' },
+      { title: 'A dependable foundation', text: 'Sub-base preparation and compaction considered against the site conditions.' },
+      { title: 'Drainage in the detail', text: 'Falls, channels, and junctions reviewed to help manage surface water.' },
+      { title: 'Patterns that complement', text: 'Colour, laying pattern, and borders chosen to suit the property.' },
+    ],
+    process: ['Survey the outdoor area and review access and drainage.', 'Select the pavers, laying pattern, and preparation scope.', 'Prepare the ground, establish levels, and install the paving.', 'Compact, finish the joints, and inspect the completed area.'],
+    related: ['imported-stamped-interlock', 'swimming-pool-construction', 'general-building-contracting'],
+  },
+  {
+    slug: 'imported-stamped-interlock', title: 'Imported Stamped Interlock', shortTitle: 'Stamped interlock', category: 'Exterior finishing',
+    ...serviceMedia.stamped,
+    description: 'Distinctive outdoor patterns and textured finishes for a beautifully composed exterior.',
+    introduction: 'Decorative stamped finishes can add depth and definition to an outdoor space. We discuss the available imported systems, patterns, colours, and installation requirements so that the selected finish fits your property, your budget, and local availability.',
+    benefits: [
+      { title: 'Distinctive surface character', text: 'Decorative patterns and textures that complement the building.' },
+      { title: 'Specification before commitment', text: 'Confirm the actual product, supplier availability, and suitability in your quotation.' },
+      { title: 'A coordinated exterior', text: 'Borders, transitions, and adjoining surfaces considered within the design.' },
+      { title: 'Maintenance made clear', text: 'Sealing, cleaning, and care discussed for the chosen system.' },
+    ],
+    process: ['Review the site and the decorative finish you have in mind.', 'Confirm the product system, samples, availability, and quotation.', 'Prepare the base and install the agreed decorative finish.', 'Complete required sealing and explain the care requirements.'],
+    related: ['interlock-paving', 'general-building-contracting', 'painting'],
+  },
+  {
+    slug: 'painting', title: 'Painting', shortTitle: 'Painting & finishes', category: 'Interior & exterior',
+    ...serviceMedia.painting,
+    description: 'Considered colour, careful preparation, and beautiful interior and exterior finishes.',
+    introduction: 'A beautifully painted space starts with preparation. We help you select appropriate colours and paint systems, review the condition of the surfaces, and agree a finishing scope that gives your interiors and exteriors a fresh, cohesive appearance.',
+    benefits: [
+      { title: 'Colours with confidence', text: 'A palette that complements the natural light, materials, and room use.' },
+      { title: 'Preparation given priority', text: 'Surface repairs, cleaning, priming, and protection planned before finishing.' },
+      { title: 'The right coating system', text: 'Paint selected for the substrate and interior or exterior conditions.' },
+      { title: 'Attention to the edges', text: 'Care taken with junctions, trims, fittings, and final cleanup.' },
+    ],
+    process: ['Inspect the surfaces and explore your colour preferences.', 'Agree preparation, paint specifications, and the project scope.', 'Protect the space, prepare surfaces, and apply the specified system.', 'Review coverage and details, complete touch-ups, and clean the area.'],
+    related: ['artwork-and-interior-design', 'pop-ceiling-installation', 'general-building-contracting'],
+  },
+]
+
+export const getService = (slug) => services.find((service) => service.slug === slug)

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <rect width="1600" height="1000" fill="#edece5"/>
+  <path d="M0 770 1600 690v310H0Z" fill="#d5d6cc"/>
+  <path d="M150 725V310l690-85 505 90v410Z" fill="#f9f8f2"/>
+  <path d="m150 310 690-85v500H150Z" fill="#e8e7de"/>
+  <path d="m840 225 505 90v410H840Z" fill="#faf9f4"/>
+  <path d="m120 310 720-105 535 90-30 20-505-90-690 85Z" fill="#d4d3c9"/>
+  <path d="M290 408 710 355v270H290Z" fill="#536864"/>
+  <path d="M870 354h420v260H870Z" fill="#526763"/>
+  <g stroke="#b4b9ab" stroke-width="6"><path d="M430 390v235m140-253v253M1010 354v260m140-260v260"/></g>
+  <path d="M115 727h1260l85 45H30Z" fill="#bfc0b5"/>
+  <path d="m345 832 787-22 233 133-858 38Z" fill="#a2bebc"/>
+  <path d="m345 832 787-22 233 133" fill="none" stroke="#f9f8f2" stroke-width="16"/>
+  <path d="M740 435h58v290h-58Z" fill="#a7977d"/>
+  <path d="M1470 240v510" stroke="#7e856e" stroke-width="20"/>
+  <g fill="#8c967e"><ellipse cx="1470" cy="235" rx="100" ry="195"/><ellipse cx="1380" cy="280" rx="55" ry="120"/><ellipse cx="1530" cy="275" rx="55" ry="130"/></g>
+  <g stroke="#c4c6bb" stroke-width="2"><path d="M0 830 345 832m-345 75 414-47M1180 783l420 13m-312 66 312 35"/></g>
+  <text x="80" y="945" fill="#4b5b57" font-family="sans-serif" font-size="16" letter-spacing="4">ARCHITECTURAL ILLUSTRATION · PHOTOGRAPH UNAVAILABLE</text>
+</svg>

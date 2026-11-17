@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#e7ece9"/><stop offset="1" stop-color="#f6f3e9"/></linearGradient><pattern id="concrete" width="60" height="60" patternUnits="userSpaceOnUse"><rect width="60" height="60" fill="#c3c2b7"/><path d="M5 12h4m24 18h3m18 19h4" stroke="#a6a99f" stroke-width="1"/></pattern></defs>
+  <rect width="1200" height="900" fill="url(#sky)"/>
+  <path d="M0 710h1200v190H0Z" fill="#c2c1b2"/>
+  <g fill="url(#concrete)" stroke="#a0a69e" stroke-width="2"><path d="M120 160h840v65H120Zm0 310h840v65H120Zm0 150h840v65H120Z"/><path d="M150 225h65v500h-65Zm355 0h65v500h-65Zm355 0h65v500h-65Z"/></g>
+  <path d="m960 160 120 65v65l-120-65Zm0 310 120 65v65l-120-65Zm0 150 120 65v65l-120-65Z" fill="#9fa79f"/>
+  <g stroke="#7e8e8a" stroke-width="6"><path d="M65 215v550m240-550v550M65 325h240M65 455h240M65 585h240M65 715h240M65 325l240 260M65 585l240-260"/></g>
+  <g stroke="#8d7150" stroke-width="5"><path d="M470 160v-90m20 90V70m20 90V70m350 90V65m20 95V65m20 95V65"/></g>
+  <path d="M1030 150V55h-250m250 0 125 65M905 55v120" stroke="#bc9c67" stroke-width="9" fill="none"/>
+  <path d="M720 740h300l95 65H785Z" fill="#ded7c7" stroke="#aba89a" stroke-width="2"/>
+  <g fill="#e6d3aa"><path d="M340 680h105v65H340Zm10-80h105v65H350Zm10-80h105v65H360Z"/></g>
+  <g stroke="#7c7365" stroke-width="4" fill="#ded4c2"><path d="m350 740-25 90m98-90 30 90M340 680l-15 62m120-62 25 62"/></g>
+  <circle cx="390" cy="620" r="28" fill="#bd9978"/><path d="M355 615c3-43 67-43 70 0Z" fill="#c0a16a"/>
+  <path d="M350 657h82l20 83H332Z" fill="#243e4a"/>
+  <path d="m345 834 182-22m-370 5 120 25M870 810l160 18" stroke="#a2a493" stroke-width="2"/>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs><pattern id="tile" width="210" height="150" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="206" height="146" fill="#e6e2d8"/><path d="m0 70 56-13 37 12 85-38 32 3M36 150l39-47 58 8 44-43" fill="none" stroke="#c4c6bc" stroke-width="2" opacity=".65"/></pattern><pattern id="floor" width="160" height="160" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="156" height="156" fill="#a6aea6"/><path d="m0 100 68-21 91-38" stroke="#bbc1b7" fill="none" stroke-width="2"/></pattern></defs>
+  <rect width="1200" height="900" fill="#d3d5cc"/><path d="M0 0h1200v660H0Z" fill="url(#tile)"/>
+  <path d="M0 660h1200v240H0Z" fill="url(#floor)"/><path d="M0 660h1200" stroke="#a9b3a9" stroke-width="7"/>
+  <path d="M50 54h470v505H50Z" fill="#c4d2ca" fill-opacity=".3" stroke="#d0d8cc" stroke-width="8"/><path d="M350 60v460" stroke="#c7d0c5" stroke-width="4"/>
+  <path d="M386 119v150m-34-139h74" stroke="#8c9d91" stroke-width="7"/>
+  <rect x="697" y="116" width="349" height="297" fill="#f8f4e6" stroke="#b59d72" stroke-width="10"/><path d="M678 458h387v41H678Z" fill="#f9f8f0"/><path d="M707 499h331v155H707Z" fill="#ab9675"/><path d="M817 499v155m110-155v155" stroke="#88795f" stroke-width="2"/>
+  <ellipse cx="871" cy="453" rx="110" ry="31" fill="#f9f8f0" stroke="#c7c7ba" stroke-width="2"/><path d="M862 422v-35q0-16 18-16h21" fill="none" stroke="#a18d67" stroke-width="7"/>
+  <path d="m693 701 346-2 70 83-430 4Z" fill="#e3e0d4"/><path d="M744 660v30m254-30v30" stroke="#8c7c60" stroke-width="8"/>
+</svg>
