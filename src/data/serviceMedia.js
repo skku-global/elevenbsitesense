@@ -40,6 +40,16 @@ import poolShell from '../assets/images/pool/step-structure.webp'
 import poolMosaic from '../assets/images/pool/step-mosaic.webp'
 import poolCurved from '../assets/images/pool/gallery-curved-mosaic.webp'
 
+// Illustrative P.O.P. ceiling photography.
+import ceilBoards from '../assets/images/ceiling/step-boards.webp'
+import ceilFraming from '../assets/images/ceiling/step-framing.webp'
+import ceilPlaster from '../assets/images/ceiling/step-plastering.webp'
+import ceilLounge from '../assets/images/ceiling/step-finished-lounge.webp'
+import ceilProcess from '../assets/images/ceiling/process-lighting.webp'
+import ceilResult from '../assets/images/ceiling/result-living.webp'
+import ceilBedroom from '../assets/images/ceiling/gallery-bedroom.webp'
+import ceilCove from '../assets/images/ceiling/gallery-cove.webp'
+
 const PROJECT_CAPTION = 'Eleven B Site Sense project'
 
 // Each service uses a locally bundled, subject-specific design illustration.
@@ -94,14 +104,25 @@ export const serviceMedia = {
     ],
   },
   ceiling: {
-    ...entry('pop-ceiling', null, ceilingPreview,
-      'Decorative ceiling and lighting within a finished luxury interior',
-      'Look up. See the difference.', '50% 5%'),
+    ...entry('pop-ceiling', ceilResult, ceilingPreview,
+      'Living room with a layered P.O.P. ceiling, warm cove lighting and recessed spotlights',
+      'Look up. See the difference.', '50% 30%'),
     fallbackLabel: 'P.O.P. ceiling illustration',
+    imageCaption: 'Illustrative image',
+    processImage: ceilProcess,
+    processAlt: 'Ceiling installers working beneath a stepped P.O.P. ceiling with LED cove lighting',
+    stepAspect: '3 / 4',
+    processSteps: [
+      { label: 'Materials', text: 'Quality boards, plaster and fixings chosen for a strong, crack-free ceiling.', image: ceilBoards, alt: 'Stack of moisture-resistant plasterboard sheets ready for installation' },
+      { label: 'Framing', text: 'Metal frame set out and fixed level to carry the design and the lighting.', image: ceilFraming, alt: 'Installers fixing a metal ceiling frame to a concrete slab' },
+      { label: 'Boarding & plastering', text: 'Boards fixed, joints plastered and profiles shaped to the agreed design.', image: ceilPlaster, alt: 'Worker on a wooden scaffold finishing a stepped ceiling with LED strips' },
+      { label: 'Lighting & finish', text: 'Cove lights and spotlights fitted, then a smooth painted finish.', image: ceilLounge, alt: 'Large lounge with a layered ceiling, cove lighting and a pendant chandelier' },
+    ],
     galleryTitle: 'Ceilings, considered in every detail.',
+    galleryDescription: 'Illustrative examples of finished P.O.P. ceilings.',
     gallery: [
-      { image: ceilingPatternPreview, alt: 'Interior ceiling design reference', fallbackSrc: ceilingPatternPreview, fallbackLabel: 'Decorative ceiling pattern', fallbackAlt: 'Illustration of decorative coffered gypsum ceiling panels with recessed lights', position: '50% 0%', title: 'Decorative ceiling patterns', description: 'Balanced profiles and carefully composed plaster details.' },
-      { image: ceilingLightingPreview, alt: 'Interior ceiling and lighting reference', fallbackSrc: ceilingLightingPreview, fallbackLabel: 'Cove lighting detail', fallbackAlt: 'Close-up illustration of a stepped POP ceiling with concealed cove lighting and recessed spotlights', position: '50% 0%', title: 'Recessed & cove lighting', description: 'Lighting planned into the ceiling, rather than added at the end.' },
+      { image: ceilBedroom, alt: 'Bedroom with a floating P.O.P. ceiling panel and soft cove lighting', fallbackSrc: ceilingPatternPreview, fallbackLabel: 'Decorative ceiling pattern', position: '50% 12%', title: 'Floating bedroom ceiling', description: 'A simple raised panel with hidden lighting around the edge.', caption: 'Illustrative image' },
+      { image: ceilCove, alt: 'Living room ceiling with warm cove lighting and recessed spotlights', fallbackSrc: ceilingLightingPreview, fallbackLabel: 'Cove lighting detail', position: '50% 40%', title: 'Recessed & cove lighting', description: 'Lighting planned into the ceiling, rather than added at the end.', caption: 'Illustrative image' },
     ],
   },
   interior: entry('interior-design', null, interiorPreview,
