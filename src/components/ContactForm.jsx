@@ -118,7 +118,7 @@ export default function ContactForm() {
           {status === 'preview' ? 'Your project brief is ready.' : 'Thank you. Your enquiry has been sent.'}
         </h3>
         <p>
-          {status === 'preview' ? 'Your details are ready; nothing has been sent yet. Open your enquiry in WhatsApp or your email app, review it and press Send there. You can also download a personal copy.' : 'Your enquiry was accepted by our submission service. The company can use the contact details you supplied to discuss the next steps.'}
+          {status === 'preview' ? 'Your details are ready; nothing has been sent yet. Open your enquiry in your email app, review it and press Send there, or download a copy to share. You can also start a conversation on our official WhatsApp number.' : 'Your enquiry was accepted by our submission service. The company can use the contact details you supplied to discuss the next steps.'}
         </p>
         <dl className="enquiry-summary">
           <div>
@@ -148,7 +148,7 @@ export default function ContactForm() {
         </dl>
         <div className="form-success-actions">
           {status === 'preview' && <>
-            <Button href={getWhatsAppUrl(enquiryText())} target="_blank" rel="noopener noreferrer" variant="navy" icon={false}><MessageCircle size={16} aria-hidden="true" />Open in WhatsApp</Button>
+            <Button href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer" variant="navy" icon={false}><MessageCircle size={16} aria-hidden="true" />Chat on WhatsApp</Button>
             <Button href={getEmailUrl(`Project enquiry — ${getService(values.service)?.title || 'Multiple services'}`, enquiryText())} variant="outline" icon={false}><Mail size={16} aria-hidden="true" />Open in email</Button>
             <Button variant="outline" icon={false} onClick={download}><Download size={16} aria-hidden="true" />Download enquiry</Button>
           </>}
@@ -166,7 +166,7 @@ export default function ContactForm() {
       >
         {!live && <div className="form-mode-note">
           <Info size={17} aria-hidden="true" />
-          <p><strong>Prepare your project brief.</strong> Review your details, then open the brief in WhatsApp or your email app to send it to {company.contactPerson}.</p>
+          <p><strong>Prepare your project brief.</strong> Review your details, then email or download the brief. You can also chat with {company.contactPerson} on our official WhatsApp number.</p>
         </div>}
         {status === 'error' && <p className="form-feedback form-feedback--error" role="alert">
           {feedback}

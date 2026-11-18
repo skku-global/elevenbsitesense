@@ -9,6 +9,8 @@ import { fileURLToPath } from 'node:url'
 // Dependency-free browser checks using Chromium's DevTools protocol.
 // Start Vite first. BROWSER_PATH and SITE_URL can override the defaults.
 const root = fileURLToPath(new URL('../', import.meta.url))
+const officialWhatsAppMessage = 'Hello Eleven B Site-Sense Nigeria Limited. I would like to make an enquiry about your construction services.'
+const officialWhatsAppUrl = `https://wa.me/2348034456275?text=${encodeURIComponent(officialWhatsAppMessage)}`
 const baseUrl = process.env.SITE_URL || 'http://127.0.0.1:5173'
 const output = path.join(root, 'artifacts', 'verification')
 const browserPath = [
@@ -105,12 +107,15 @@ async function inspect(route, width) {
     width: innerWidth,
     contentWidth: document.documentElement.scrollWidth,
     links: [...document.querySelectorAll('a[href]')].filter(a => a.origin === location.origin).map(a => a.pathname),
+    whatsappLinks: [...document.querySelectorAll('a[href^="https://wa.me/"]')].map(a => a.getAttribute('href')),
     unnamedButtons: [...document.querySelectorAll('button')].filter(b => !b.textContent.trim() && !b.getAttribute('aria-label')).length,
   }))()`)
   assert.equal(result.headings, 1, `${route}: expected exactly one main heading`)
   assert.equal(result.headers, 1, `${route}: expected exactly one site header`)
   assert.equal(result.announcementStrips, 1, `${route}: expected exactly one announcement strip`)
   assert.equal(result.navbarShells, 1, `${route}: expected exactly one navigation bar`)
+  assert.ok(result.whatsappLinks.length >= 2, `${route}: expected floating and footer WhatsApp links`)
+  for (const href of result.whatsappLinks) assert.equal(href, officialWhatsAppUrl, `${route}: wrong WhatsApp number or prefilled message`)
   assert.ok(result.title && result.description?.length > 30, `${route}: missing SEO metadata`)
   assert.ok(result.contentWidth <= result.width + 1, `${route} at ${width}px has horizontal overflow: ${result.contentWidth}px`)
   assert.equal(result.unnamedButtons, 0, `${route}: button without an accessible name`)
@@ -192,8 +197,11 @@ try {
     }))()`)
     for (const phone of ['2348034456275', '2348072791980', '2348124025129']) {
       assert.ok(contact.phoneLinks.includes(`tel:+${phone}`), `${route}: missing international phone link`)
-      assert.ok(contact.whatsappLinks.some(link => new URL(link).pathname === `/${phone}`), `${route}: missing WhatsApp link`)
     }
+    assert.ok(contact.whatsappLinks.length > 0, `${route}: missing official WhatsApp link`)
+    for (const href of contact.whatsappLinks) assert.equal(href, officialWhatsAppUrl)
+    if (route === '/') assert.equal(await evaluate(`document.querySelector('.hero-actions a[href^="https://wa.me/"]').getAttribute('href')`), officialWhatsAppUrl)
+    if (route === '/contact') assert.equal(await evaluate(`document.querySelector('.contact-whatsapp a').getAttribute('href')`), officialWhatsAppUrl)
     assert.ok(contact.emailLinks.includes('mailto:ganiyutaiwo2020@gmail.com'))
     assert.ok(contact.address.includes('4th Floor, Lister Building, Ring Road,') && contact.address.includes('Ibadan, Oyo State, Nigeria.'))
     assert.equal(contact.schema.legalName, 'ELEVEN B SITE-SENSE NIGERIA LIMITED')
@@ -203,7 +211,7 @@ try {
     assert.equal(contact.slogan, 'WE BUILD IT BETTER.')
     assert.equal(contact.quotes, 0, 'Unapproved testimonials must never be published')
   }
-  console.log('Official identity, three phone/WhatsApp numbers, email, address and honest feedback verified.')
+  console.log('Official identity, three telephone contacts, one official WhatsApp number/message, email and address verified.')
 
   await viewport(1440)
   await navigate('/')
@@ -289,13 +297,13 @@ try {
   }))()`)
   const preparedWhatsApp = new URL(sharing.whatsapp)
   assert.equal(preparedWhatsApp.pathname, '/2348034456275')
-  assert.ok(preparedWhatsApp.searchParams.get('text').includes('Website Check'))
-  assert.ok(preparedWhatsApp.searchParams.get('text').includes('Swimming Pool Construction'))
-  assert.ok(preparedWhatsApp.searchParams.get('text').includes('residential building consultation'))
+  assert.equal(preparedWhatsApp.searchParams.get('text'), officialWhatsAppMessage)
   assert.ok(sharing.email.startsWith('mailto:ganiyutaiwo2020@gmail.com?'))
   const preparedEmail = new URLSearchParams(sharing.email.split('?')[1])
   assert.ok(preparedEmail.get('subject').includes('Swimming Pool Construction'))
-  assert.equal(preparedEmail.get('body'), preparedWhatsApp.searchParams.get('text'))
+  assert.ok(preparedEmail.get('body').includes('Website Check'))
+  assert.ok(preparedEmail.get('body').includes('Swimming Pool Construction'))
+  assert.ok(preparedEmail.get('body').includes('residential building consultation'))
   await screenshot('contact-enquiry-preview')
   await evaluate(`[...document.querySelectorAll('.form-success button')].find(button => button.textContent.includes('Edit enquiry')).click()`)
   await waitFor(`!!document.querySelector('form')`, 'edit enquiry')

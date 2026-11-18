@@ -9,6 +9,16 @@ import paintingPreview from '../assets/images/services/painting.svg?no-inline'
 import ceilingPatternPreview from '../assets/images/services/ceiling-pattern.svg?no-inline'
 import ceilingLightingPreview from '../assets/images/services/ceiling-lighting.svg?no-inline'
 
+// Eleven B Site Sense project photographs (supplied by the company, cleaned and optimised to WebP).
+import poolDeckPhoto from '../assets/images/projects/swimming-pool-tiled-deck.webp'
+import poolJacuzziPhoto from '../assets/images/projects/pool-and-jacuzzi.webp'
+import interlockDrivewayPhoto from '../assets/images/projects/paving-rainbow-driveway.webp'
+import interlockYellowPhoto from '../assets/images/projects/interlock-paving-yellow.webp'
+import stampedDarkPhoto from '../assets/images/projects/stamped-concrete-dark.webp'
+import stampedGrassPhoto from '../assets/images/projects/duplex-grass-paving.webp'
+
+const PROJECT_CAPTION = 'Eleven B Site Sense project'
+
 // Each service uses a locally bundled, subject-specific design illustration.
 // Replace null photo entries only with approved, visually verified photographs.
 const entry = (subject, photo, preview, alt, overviewTitle, imagePosition = '50% 50%') => ({
@@ -21,16 +31,23 @@ const entry = (subject, photo, preview, alt, overviewTitle, imagePosition = '50%
   alt,
   overviewTitle,
   imagePosition,
-  imageCaption: photo ? 'Illustrative service reference · Stock photograph' : 'Service illustration · Design reference',
+  imageCaption: photo ? PROJECT_CAPTION : 'Service illustration · Design reference',
 })
 
 export const serviceMedia = {
   construction: entry('construction', null, constructionPreview,
     'Structural construction work and professionals working on a building site',
     'A strong foundation for your vision.'),
-  pool: entry('swimming-pool', null, poolPreview,
-    'Finished swimming pool with clear water and a carefully detailed poolside terrace',
-    'Outdoor living, beautifully planned.'),
+  pool: {
+    ...entry('swimming-pool', poolDeckPhoto, poolPreview,
+      'Finished Eleven B Site Sense swimming pool with blue tiles and a wood-effect tiled poolside deck',
+      'Outdoor living, beautifully planned.', '50% 60%'),
+    galleryTitle: 'Pools we have delivered.',
+    galleryDescription: 'Photographs from Eleven B Site Sense pool projects.',
+    gallery: [
+      { image: poolJacuzziPhoto, alt: 'Tiled swimming pool with an adjoining circular jacuzzi, built by Eleven B Site Sense', fallbackSrc: poolPreview, fallbackLabel: 'Swimming pool illustration', position: '50% 50%', title: 'Pool with built-in jacuzzi', description: 'Mosaic-tiled pool finished with a circular jacuzzi and seating step.', caption: PROJECT_CAPTION },
+    ],
+  },
   ceiling: {
     ...entry('pop-ceiling', null, ceilingPreview,
       'Decorative ceiling and lighting within a finished luxury interior',
@@ -51,12 +68,26 @@ export const serviceMedia = {
   // A house exterior is not a paving photograph. Leave these photo sources
   // unset until an approved, verifiable paving photograph is available.
   // Replace null with an imported local photo or a verified photo URL.
-  interlock: entry('interlock-paving', null, interlockPreview,
-    'Illustration of individual interlocking paving stones laid in a decorative geometric pattern',
-    'A better approach to your property.'),
-  stamped: entry('stamped-paving', null, stampedPreview,
-    'Illustration of a textured ashlar stamped paving pattern with a contrasting border',
-    'Pattern, texture, and a distinctive arrival.'),
+  interlock: {
+    ...entry('interlock-paving', interlockDrivewayPhoto, interlockPreview,
+      'Curved multi-coloured interlock paving driveway laid by Eleven B Site Sense',
+      'A better approach to your property.', '50% 55%'),
+    galleryTitle: 'Interlock paving, laid with care.',
+    galleryDescription: 'Photographs from Eleven B Site Sense paving projects.',
+    gallery: [
+      { image: interlockYellowPhoto, alt: 'Paved compound with contrasting yellow and red interlock bands, by Eleven B Site Sense', fallbackSrc: interlockPreview, fallbackLabel: 'Interlock paving illustration', position: '50% 50%', title: 'Patterned compound paving', description: 'Contrasting bands that define the space and guide movement.', caption: PROJECT_CAPTION },
+    ],
+  },
+  stamped: {
+    ...entry('stamped-paving', stampedDarkPhoto, stampedPreview,
+      'Dark textured stamped concrete floor with a slate pattern, by Eleven B Site Sense',
+      'Pattern, texture, and a distinctive arrival.', '50% 50%'),
+    galleryTitle: 'Stamped finishes, built to last.',
+    galleryDescription: 'Photographs from Eleven B Site Sense stamped paving projects.',
+    gallery: [
+      { image: stampedGrassPhoto, alt: 'Stamped concrete slabs separated by grass strips in front of a modern duplex, by Eleven B Site Sense', fallbackSrc: stampedPreview, fallbackLabel: 'Stamped paving illustration', position: '50% 70%', title: 'Stamped slabs with grass joints', description: 'A modern arrival where textured slabs meet soft green lines.', caption: PROJECT_CAPTION },
+    ],
+  },
   painting: entry('painting', null, paintingPreview,
     'Interior painting and professional wall finishing reference',
     'Fresh colour. Carefully finished.'),

@@ -10,7 +10,7 @@ import SiteImage from '../components/SiteImage'
 import ContactCTA from '../components/ContactCTA'
 import Reveal from '../components/Reveal'
 import SEO from '../components/SEO'
-import { company } from '../data/company'
+import { company, getWhatsAppUrl } from '../data/company'
 import { media } from '../data/media'
 import { services } from '../data/services'
 import { projects } from '../data/projects'
@@ -47,6 +47,7 @@ export default function Home() {
             <div className="hero-actions">
               <Button to="/services">Explore Our Services</Button>
               <Button to="/contact" variant="white-outline" diagonal>Contact Us</Button>
+              <Button href={getWhatsAppUrl()} variant="white-outline" target="_blank" rel="noopener noreferrer" diagonal>Chat on WhatsApp</Button>
             </div>
           </Reveal>
           <div className="hero-bottom">

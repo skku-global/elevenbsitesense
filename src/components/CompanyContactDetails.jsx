@@ -14,9 +14,9 @@ export default function CompanyContactDetails({ compact = false, showPerson = tr
         <ul className="company-phone-list">
           {company.phoneNumbers.map((contact) => <li key={contact.number}>
             <a className="company-phone-link" href={getPhoneUrl(contact)} aria-label={`Call ${company.contactPerson} on ${contact.number}`}>{contact.number}</a>
-            <a className="company-whatsapp-link" href={getWhatsAppUrl(undefined, contact.international)} target="_blank" rel="noopener noreferrer" aria-label={`Message ${company.contactPerson} on WhatsApp at ${contact.number}`}>
+            {contact.international === company.whatsapp ? <a className="company-whatsapp-link" href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer" aria-label={`Message ${company.contactPerson} on WhatsApp at ${company.whatsappDisplay}`}>
               <MessageCircle size={15} strokeWidth={1.5} aria-hidden="true" /><span>WhatsApp</span>
-            </a>
+            </a> : <span className="small-label">Alternative phone</span>}
           </li>)}
         </ul>
       </div>
