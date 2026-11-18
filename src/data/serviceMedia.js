@@ -57,8 +57,9 @@ import lockCompaction from '../assets/images/interlock/step-compaction.webp'
 import lockResult from '../assets/images/interlock/result-driveway.webp'
 
 // Illustrative painting photography.
+import paintMaterials from '../assets/images/painting/step-materials.webp'
+import paintExterior from '../assets/images/painting/process-exterior.webp'
 import paintPrep from '../assets/images/painting/step-prep.webp'
-import paintSkim from '../assets/images/painting/step-skim.webp'
 import paintRoll from '../assets/images/painting/step-painting.webp'
 import paintFinish from '../assets/images/painting/step-finish.webp'
 import paintResult from '../assets/images/painting/result-living.webp'
@@ -199,12 +200,12 @@ export const serviceMedia = {
       'Living room with a deep teal feature wall, light grey walls and styled furniture',
       'Fresh colour. Carefully finished.', '50% 40%'),
     imageCaption: 'Illustrative image',
-    processImage: paintRoll,
-    processAlt: 'Painter rolling white emulsion onto an interior wall',
+    processImage: paintExterior,
+    processAlt: 'Painters finishing the exterior walls and metal gate of a newly built bungalow',
     processSteps: [
-      { label: 'Surface preparation', text: 'Old, flaking paint scraped back and the wall cleaned so new paint bonds well.', image: paintPrep, alt: 'Roller applying fresh white paint beside a wall with peeling old paint' },
-      { label: 'Filling & skimming', text: 'Cracks and joints filled, then the wall skimmed smooth before priming.', image: paintSkim, alt: 'Plasterer skimming wall joints smooth with a trowel' },
-      { label: 'Painting', text: 'Primer and top coats applied evenly, with clean lines at edges and corners.', image: paintRoll, alt: 'Painter rolling paint onto a wall with an extension pole' },
+      { label: 'Paint & materials', text: 'Quality paints chosen for the room, surface and finish, from emulsion to gloss.', image: paintMaterials, alt: 'Buckets and tins of interior and gloss paint ready for the job' },
+      { label: 'Preparation & skimming', text: 'Flaking paint removed, cracks filled and walls skimmed smooth before priming.', image: paintPrep, alt: 'Roller applying fresh white paint beside a wall with peeling old paint' },
+      { label: 'Painting', text: 'Primer and top coats applied evenly inside and out, with clean lines at edges and corners.', image: paintExterior, alt: 'Painters rolling exterior walls and painting the gate of a new bungalow' },
       { label: 'Final finish', text: 'Touch-ups done, the room cleaned and your space handed back ready to use.', image: paintFinish, alt: 'Freshly painted grey room with a lit ceiling and light wooden floor' },
     ],
     galleryTitle: 'Colour, carefully finished.',
