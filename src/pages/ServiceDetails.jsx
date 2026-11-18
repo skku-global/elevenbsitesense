@@ -94,7 +94,7 @@ export default function ServiceDetails() {
           {service.processSteps ? (
             <div className="process-grid process-grid--photos">
               {service.processSteps.map((step, index) => <Reveal className="process-step process-step--photo" key={step.label} delay={index * 0.05}>
-                <div className="process-step-image">
+                <div className="process-step-image" style={service.stepAspect ? { aspectRatio: service.stepAspect } : undefined}>
                   <img src={step.image} alt={step.alt} loading="lazy" decoding="async" width={900} height={600} />
                 </div>
                 <span>{String(index + 1).padStart(2, '0')}</span>

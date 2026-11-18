@@ -79,6 +79,7 @@ export const serviceMedia = {
     imageCaption: 'Illustrative image',
     processImage: poolProcess,
     processAlt: 'Workers rendering the concrete floor and walls of a pool shell',
+    stepAspect: '3 / 4',
     processSteps: [
       { label: 'Excavation', text: 'Pool set out on site and dug to the agreed shape, size and depth.', image: poolDig, alt: 'Freshly excavated rectangular pool pit in red earth beside a house' },
       { label: 'Structure & plumbing', text: 'Reinforced concrete shell cast, with inlets, lights and steps built in.', image: poolShell, alt: 'Rendered concrete pool shell with built-in steps and wall fittings' },
