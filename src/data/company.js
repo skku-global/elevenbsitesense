@@ -21,10 +21,9 @@ export const company = {
     { number: '08072791980', international: '2348072791980' },
     { number: '08124025129', international: '2348124025129' },
   ],
-  whatsappDisplay: '08034456275',
-  whatsapp: '2348034456275',
-  whatsappMessage: 'Hello Eleven B Site-Sense Nigeria Limited. I would like to make an enquiry about your construction services.',
+  primaryWhatsAppIndex: 0,
   get phone() { return this.phoneNumbers[0]?.number || '' },
+  get whatsapp() { return this.phoneNumbers[this.primaryWhatsAppIndex]?.international || '' },
   email: 'ganiyutaiwo2020@gmail.com',
   addressLines: ['4th Floor, Lister Building, Ring Road,', 'Ibadan, Oyo State, Nigeria.'],
   get address() { return this.addressLines.join('\n') },
@@ -46,7 +45,7 @@ export const company = {
   serviceArea: '',
   officeHours: '',
   websiteUrl: '',
-  contactFormEndpoint: '', // HTTPS endpoint accepting JSON and returning a 2xx response.
+  contactFormEndpoint: '/api/contact', // Vercel function (api/contact.js) that emails enquiries via Resend.
 }
 
 export function getPhoneUrl(contact) {
@@ -54,10 +53,10 @@ export function getPhoneUrl(contact) {
   return /^\d{7,15}$/.test(phone) ? `tel:+${phone}` : null
 }
 
-export function getWhatsAppUrl() {
-  const phone = company.whatsapp.replace(/\D/g, '')
+export function getWhatsAppUrl(message = `Hello ${company.contactPerson}, I would like to discuss a project with ${company.brandName}.`, number = company.whatsapp) {
+  const phone = (number || '').replace(/\D/g, '')
   return /^\d{7,15}$/.test(phone)
-    ? `https://wa.me/${phone}?text=${encodeURIComponent(company.whatsappMessage)}`
+    ? `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
     : null
 }
 
