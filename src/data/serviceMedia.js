@@ -24,6 +24,14 @@ import stepSite from '../assets/images/construction/step-site-materials.webp'
 import stepFoundation from '../assets/images/construction/step-foundation-rebar.webp'
 import stepStructure from '../assets/images/construction/step-structure-formwork.webp'
 
+// Illustrative tiling photography.
+import tileSelection from '../assets/images/tiling/step-tile-selection.webp'
+import tileAdhesive from '../assets/images/tiling/step-adhesive.webp'
+import tileLaying from '../assets/images/tiling/step-laying.webp'
+import tileLiving from '../assets/images/tiling/step-finished-living.webp'
+import tileHall from '../assets/images/tiling/result-hall.webp'
+import tileBathroom from '../assets/images/tiling/gallery-bathroom.webp'
+
 const PROJECT_CAPTION = 'Eleven B Site Sense project'
 
 // Each service uses a locally bundled, subject-specific design illustration.
@@ -80,9 +88,26 @@ export const serviceMedia = {
   interior: entry('interior-design', null, interiorPreview,
     'Styled living interior with considered furnishings, colours, and decorative accents',
     'A space with your signature.'),
-  tiling: entry('tiling', null, tilePreview,
-    'Carefully finished bathroom floor and wall tiles with aligned joints',
-    'Precision in every surface.'),
+  tiling: {
+    ...entry('tiling', tileHall, tilePreview,
+      'Bright hall finished with large white marble-effect floor tiles and a P.O.P. ceiling',
+      'Precision in every surface.', '50% 60%'),
+    imageCaption: 'Illustrative image',
+    processImage: tileLaying,
+    processAlt: 'Tiler levelling a large floor tile on fresh adhesive with a spirit level beside him',
+    processSteps: [
+      { label: 'Tile selection', text: 'Tile type, size, finish and slip resistance chosen to suit the room and your budget.', image: tileSelection, alt: 'Display rack of floor tile samples in different colours and finishes' },
+      { label: 'Surface preparation', text: 'Floor levelled and adhesive spread evenly so every tile beds down firmly.', image: tileAdhesive, alt: 'Tile adhesive spread with a notched trowel beside newly laid marble-effect tiles and levelling clips' },
+      { label: 'Laying & setting', text: 'Tiles set out, laid and levelled for straight lines and balanced cuts.', image: tileLaying, alt: 'Tiler levelling a large floor tile with a spirit level' },
+      { label: 'Grouting & finish', text: 'Joints grouted, edges finished and the floor cleaned, ready to use.', image: tileLiving, alt: 'Finished living room with large polished grey marble-effect floor tiles' },
+    ],
+    galleryTitle: 'Floors and walls, finished well.',
+    galleryDescription: 'Illustrative examples of finished tiling.',
+    gallery: [
+      { image: tileBathroom, alt: 'Bathroom finished with white and gold marble-effect wall and floor tiles', fallbackSrc: tilePreview, fallbackLabel: 'Tiling illustration', position: '50% 55%', title: 'Wall-to-floor bathroom tiling', description: 'Matching marble-effect tiles across walls and floor for a seamless finish.', caption: 'Illustrative image' },
+      { image: tileLiving, alt: 'Living room with large grey marble-effect floor tiles', fallbackSrc: tilePreview, fallbackLabel: 'Tiling illustration', position: '50% 70%', title: 'Large-format living room floor', description: 'Large tiles with tight joints for a clean, open look.', caption: 'Illustrative image' },
+    ],
+  },
   // A house exterior is not a paving photograph. Leave these photo sources
   // unset until an approved, verifiable paving photograph is available.
   // Replace null with an imported local photo or a verified photo URL.
