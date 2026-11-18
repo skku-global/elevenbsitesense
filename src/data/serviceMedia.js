@@ -73,6 +73,14 @@ import intResult from '../assets/images/interior/result-lounge.webp'
 import intBedroom from '../assets/images/interior/gallery-bedroom.webp'
 import intWall from '../assets/images/interior/gallery-wall-finishes.webp'
 
+// Illustrative stamped concrete photography.
+import stPour from '../assets/images/stamped/step-pour.webp'
+import stPattern from '../assets/images/stamped/step-pattern.webp'
+import stSeal from '../assets/images/stamped/step-sealing.webp'
+import stFinished from '../assets/images/stamped/step-finished.webp'
+import stResult from '../assets/images/stamped/result-compound.webp'
+import stDriveway from '../assets/images/stamped/gallery-driveway.webp'
+
 const PROJECT_CAPTION = 'Eleven B Site Sense project'
 
 // Each service uses a locally bundled, subject-specific design illustration.
@@ -212,12 +220,23 @@ export const serviceMedia = {
     ],
   },
   stamped: {
-    ...entry('stamped-paving', stampedDarkPhoto, stampedPreview,
-      'Dark textured stamped concrete floor with a slate pattern, by Eleven B Site Sense',
+    ...entry('stamped-paving', stResult, stampedPreview,
+      'Compound finished in grey stamped concrete with terracotta borders and a central circle',
       'Pattern, texture, and a distinctive arrival.', '50% 50%'),
+    imageCaption: 'Illustrative image',
+    processImage: stSeal,
+    processAlt: 'Worker rolling sealer over freshly coloured stamped concrete',
+    processSteps: [
+      { label: 'Base & concrete pour', text: 'Ground prepared, edges set out and concrete poured and levelled to the right depth.', image: stPour, alt: 'Crew levelling freshly poured concrete with a screed board' },
+      { label: 'Colour & stamping', text: 'Colour applied and patterns pressed into the concrete while it is still workable.', image: stPattern, alt: 'Freshly stamped red fan-pattern walkway with a dark stamped border' },
+      { label: 'Sealing', text: 'Surface cleaned and sealed to deepen the colour and protect it from wear and weather.', image: stSeal, alt: 'Worker rolling sealer over grey and red stamped concrete' },
+      { label: 'Finished surface', text: 'Edges finished and the area handed over, ready for cars and everyday use.', image: stFinished, alt: 'Compound finished in glossy red stamped concrete with a decorative circle' },
+    ],
     galleryTitle: 'Stamped finishes, built to last.',
-    galleryDescription: 'Photographs from Eleven B Site Sense stamped paving projects.',
+    galleryDescription: 'Eleven B Site Sense projects alongside illustrative examples.',
     gallery: [
+      { image: stampedDarkPhoto, alt: 'Dark textured stamped concrete floor with a slate pattern, by Eleven B Site Sense', fallbackSrc: stampedPreview, fallbackLabel: 'Stamped concrete illustration', position: '50% 50%', title: 'Dark slate-pattern finish', description: 'A deep, textured stamped surface with a natural stone look.', caption: PROJECT_CAPTION },
+      { image: stDriveway, alt: 'Curved driveway in stamped flagstone-pattern concrete beside a lawn', fallbackSrc: stampedPreview, fallbackLabel: 'Stamped concrete illustration', position: '50% 50%', title: 'Flagstone-pattern driveway', description: 'Stamped concrete with the look of natural stone, in one durable slab.', caption: 'Illustrative image' },
       { image: stampedGrassPhoto, alt: 'Stamped concrete slabs separated by grass strips in front of a modern duplex, by Eleven B Site Sense', fallbackSrc: stampedPreview, fallbackLabel: 'Stamped paving illustration', position: '50% 70%', title: 'Stamped slabs with grass joints', description: 'A modern arrival where textured slabs meet soft green lines.', caption: PROJECT_CAPTION },
     ],
   },
