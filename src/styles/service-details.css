@@ -165,3 +165,46 @@
     height: 285px;
   }
 }
+
+/* Editorial gallery: tall alternating image/text rows */
+.service-detail-gallery { grid-template-columns: 1fr; gap: 72px; }
+.service-detail-gallery figure {
+  display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 56px; align-items: center; margin: 0;
+}
+.service-detail-gallery > :nth-child(even) figure { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.service-detail-gallery > :nth-child(even) .service-detail-gallery-image { order: 2; }
+.service-detail-gallery-image { height: 560px; position: relative; }
+.service-detail-gallery-image img { transition: transform .8s ease; }
+.service-detail-gallery figure:hover .service-detail-gallery-image img { transform: scale(1.04); }
+.service-detail-gallery figcaption { padding: 0; max-width: 420px; }
+.sdg-index {
+  display: block; font-family: var(--font-display, 'Cormorant Garamond', serif); font-size: 64px; line-height: 1;
+  color: var(--gold, #a8834f); opacity: .55; margin-bottom: 18px;
+}
+.service-detail-gallery h3 {
+  font-family: var(--font-display, 'Cormorant Garamond', serif); font-size: 36px; font-weight: 500; line-height: 1.15;
+  padding-bottom: 18px; border-bottom: 1px solid #0f26351f;
+}
+.service-detail-gallery figcaption > p { font-size: 15px; line-height: 1.8; margin-top: 18px; }
+@media (max-width: 900px) {
+  .service-detail-gallery { gap: 48px; }
+  .service-detail-gallery figure,
+  .service-detail-gallery > :nth-child(even) figure { grid-template-columns: 1fr; gap: 22px; }
+  .service-detail-gallery > :nth-child(even) .service-detail-gallery-image { order: 0; }
+  .service-detail-gallery-image { height: 440px !important; }
+  .sdg-index { font-size: 44px; margin-bottom: 10px; }
+  .service-detail-gallery h3 { font-size: 28px; }
+}
+
+/* Show the whole photo, no cropping */
+.service-detail-gallery-image { height: auto !important; display: flex; justify-content: flex-end; overflow: visible; }
+.service-detail-gallery > :nth-child(even) .service-detail-gallery-image { justify-content: flex-start; }
+.service-detail-gallery-image .site-image { width: auto; height: auto; max-width: 100%; display: inline-block; }
+.service-detail-gallery-image .site-image img {
+  width: auto; height: auto; max-width: 100%; max-height: 680px; object-fit: contain; display: block;
+}
+@media (max-width: 900px) {
+  .service-detail-gallery-image,
+  .service-detail-gallery > :nth-child(even) .service-detail-gallery-image { justify-content: center; }
+  .service-detail-gallery-image .site-image img { max-height: 560px; }
+}
