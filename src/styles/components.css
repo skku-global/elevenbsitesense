@@ -1599,3 +1599,17 @@
 /* Never crop step photos: show the whole image */
 .process-grid--photos .process-step-image { aspect-ratio: 3 / 4 !important; background: #f5f3ee; display: flex; align-items: center; justify-content: center; }
 .process-grid--photos .process-step-image img { width: 100%; height: 100%; object-fit: contain; }
+
+/* No hover zoom anywhere; show full photos in cards */
+.site-image img, .process-step-image img, .service-detail-gallery-image img { transform: none !important; }
+.service-card .site-image img, .project-card .site-image img { object-fit: contain !important; background: #f5f3ee; }
+.service-card-image .site-image, .project-card-image .site-image { background: #f5f3ee; }
+
+/* Steps: number and title first, then the full photo at its natural size */
+.process-grid--photos { align-items: start; }
+.process-grid--photos .process-step--photo { display: flex; flex-direction: column; }
+.process-grid--photos .process-step--photo > span { order: 1; }
+.process-grid--photos .process-step--photo > h3 { order: 2; margin-bottom: 16px; }
+.process-grid--photos .process-step--photo > .process-step-image { order: 3; margin: 0 0 16px; aspect-ratio: auto !important; background: none; display: block; }
+.process-grid--photos .process-step--photo > .process-step-image img { height: auto; object-fit: contain; }
+.process-grid--photos .process-step--photo > p { order: 4; }
