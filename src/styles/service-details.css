@@ -208,3 +208,5 @@
   .service-detail-gallery > :nth-child(even) .service-detail-gallery-image { justify-content: center; }
   .service-detail-gallery-image .site-image img { max-height: 560px; }
 }
+/* Never enlarge a photo beyond its real size */
+.service-detail-gallery-image .site-image img { max-width: min(100%, 760px); }
