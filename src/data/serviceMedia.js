@@ -32,6 +32,14 @@ import tileLiving from '../assets/images/tiling/step-finished-living.webp'
 import tileHall from '../assets/images/tiling/result-hall.webp'
 import tileBathroom from '../assets/images/tiling/gallery-bathroom.webp'
 
+// Illustrative pool photography.
+import poolResult from '../assets/images/pool/result-villa-pool.webp'
+import poolProcess from '../assets/images/pool/process-rendering.webp'
+import poolDig from '../assets/images/pool/step-excavation.webp'
+import poolShell from '../assets/images/pool/step-structure.webp'
+import poolMosaic from '../assets/images/pool/step-mosaic.webp'
+import poolCurved from '../assets/images/pool/gallery-curved-mosaic.webp'
+
 const PROJECT_CAPTION = 'Eleven B Site Sense project'
 
 // Each service uses a locally bundled, subject-specific design illustration.
@@ -65,13 +73,23 @@ export const serviceMedia = {
     ],
   },
   pool: {
-    ...entry('swimming-pool', poolDeckPhoto, poolPreview,
-      'Finished Eleven B Site Sense swimming pool with blue tiles and a wood-effect tiled poolside deck',
+    ...entry('swimming-pool', poolResult, poolPreview,
+      'Modern white two-storey villa with a large blue-tiled swimming pool',
       'Outdoor living, beautifully planned.', '50% 60%'),
-    galleryTitle: 'Pools we have delivered.',
-    galleryDescription: 'Photographs from Eleven B Site Sense pool projects.',
+    imageCaption: 'Illustrative image',
+    processImage: poolProcess,
+    processAlt: 'Workers rendering the concrete floor and walls of a pool shell',
+    processSteps: [
+      { label: 'Excavation', text: 'Pool set out on site and dug to the agreed shape, size and depth.', image: poolDig, alt: 'Freshly excavated rectangular pool pit in red earth beside a house' },
+      { label: 'Structure & plumbing', text: 'Reinforced concrete shell cast, with inlets, lights and steps built in.', image: poolShell, alt: 'Rendered concrete pool shell with built-in steps and wall fittings' },
+      { label: 'Waterproofing & tiling', text: 'Shell waterproofed, then finished in mosaic tiles with neat lines and edges.', image: poolMosaic, alt: 'Empty pool finished in blue mosaic tiles with tiled steps' },
+      { label: 'Fill & handover', text: 'Pool filled, equipment tested and the poolside finished, ready to swim.', image: poolDeckPhoto, alt: 'Finished Eleven B Site Sense swimming pool with a tiled poolside deck' },
+    ],
+    galleryTitle: 'Pools, finished to enjoy.',
+    galleryDescription: 'Eleven B Site Sense projects alongside illustrative examples.',
     gallery: [
       { image: poolJacuzziPhoto, alt: 'Tiled swimming pool with an adjoining circular jacuzzi, built by Eleven B Site Sense', fallbackSrc: poolPreview, fallbackLabel: 'Swimming pool illustration', position: '50% 50%', title: 'Pool with built-in jacuzzi', description: 'Mosaic-tiled pool finished with a circular jacuzzi and seating step.', caption: PROJECT_CAPTION },
+      { image: poolCurved, alt: 'Curved swimming pool finished in blue mosaic tiles with a tiled seating step', fallbackSrc: poolPreview, fallbackLabel: 'Swimming pool illustration', position: '50% 60%', title: 'Curved mosaic pool', description: 'Blue mosaic tiles with a contrasting border and built-in seat.', caption: 'Illustrative image' },
     ],
   },
   ceiling: {
