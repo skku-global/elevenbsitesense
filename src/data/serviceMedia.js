@@ -50,6 +50,12 @@ import ceilResult from '../assets/images/ceiling/result-living.webp'
 import ceilBedroom from '../assets/images/ceiling/gallery-bedroom.webp'
 import ceilCove from '../assets/images/ceiling/gallery-cove.webp'
 
+// Illustrative interlock photography.
+import lockMaterials from '../assets/images/interlock/step-materials.webp'
+import lockLaying from '../assets/images/interlock/step-laying.webp'
+import lockCompaction from '../assets/images/interlock/step-compaction.webp'
+import lockResult from '../assets/images/interlock/result-driveway.webp'
+
 const PROJECT_CAPTION = 'Eleven B Site Sense project'
 
 // Each service uses a locally bundled, subject-specific design illustration.
@@ -152,12 +158,22 @@ export const serviceMedia = {
   // unset until an approved, verifiable paving photograph is available.
   // Replace null with an imported local photo or a verified photo URL.
   interlock: {
-    ...entry('interlock-paving', interlockDrivewayPhoto, interlockPreview,
-      'Curved multi-coloured interlock paving driveway laid by Eleven B Site Sense',
+    ...entry('interlock-paving', lockResult, interlockPreview,
+      'Driveway paved in red and grey interlock blocks leading to a gated modern home',
       'A better approach to your property.', '50% 55%'),
+    imageCaption: 'Illustrative image',
+    processImage: lockLaying,
+    processAlt: 'Paving crew laying grey interlock blocks over a levelled sand bed',
+    processSteps: [
+      { label: 'Materials', text: 'Interlock blocks chosen for shape, colour and strength to suit foot or vehicle traffic.', image: lockMaterials, alt: 'Stacks of curved grey interlock paving blocks on site' },
+      { label: 'Base & laying', text: 'Ground levelled and compacted, then blocks laid to the agreed pattern and borders.', image: lockLaying, alt: 'Workers laying interlock blocks onto a prepared sand base' },
+      { label: 'Compaction & jointing', text: 'Paving compacted and joints filled with sand so every block locks firmly in place.', image: lockCompaction, alt: 'Worker running a plate compactor over red and white interlock paving' },
+      { label: 'Finished surface', text: 'Edges finished and the area cleaned, ready for cars and everyday use.', image: interlockDrivewayPhoto, alt: 'Curved multi-coloured interlock driveway laid by Eleven B Site Sense' },
+    ],
     galleryTitle: 'Interlock paving, laid with care.',
-    galleryDescription: 'Photographs from Eleven B Site Sense paving projects.',
+    galleryDescription: 'Eleven B Site Sense projects alongside illustrative examples.',
     gallery: [
+      { image: interlockDrivewayPhoto, alt: 'Curved multi-coloured interlock paving driveway laid by Eleven B Site Sense', fallbackSrc: interlockPreview, fallbackLabel: 'Interlock paving illustration', position: '50% 50%', title: 'Rainbow driveway path', description: 'A curved path of coloured bands leading to the gate.', caption: PROJECT_CAPTION },
       { image: interlockYellowPhoto, alt: 'Paved compound with contrasting yellow and red interlock bands, by Eleven B Site Sense', fallbackSrc: interlockPreview, fallbackLabel: 'Interlock paving illustration', position: '50% 50%', title: 'Patterned compound paving', description: 'Contrasting bands that define the space and guide movement.', caption: PROJECT_CAPTION },
     ],
   },
