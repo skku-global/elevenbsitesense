@@ -337,3 +337,10 @@
     gap: 24px 18px;
   }
 }
+
+/* Comfortable tap targets on phones (about 44px), without changing desktop */
+@media (max-width: 760px) {
+  .footer-links > a { display: flex; align-items: center; min-height: 44px; }
+  .breadcrumbs a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; }
+  .footer .back-to-top, footer [href="#top"], footer button { min-height: 44px; }
+}
