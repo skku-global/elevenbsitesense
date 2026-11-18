@@ -56,6 +56,13 @@ import lockLaying from '../assets/images/interlock/step-laying.webp'
 import lockCompaction from '../assets/images/interlock/step-compaction.webp'
 import lockResult from '../assets/images/interlock/result-driveway.webp'
 
+// Illustrative painting photography.
+import paintPrep from '../assets/images/painting/step-prep.webp'
+import paintSkim from '../assets/images/painting/step-skim.webp'
+import paintRoll from '../assets/images/painting/step-painting.webp'
+import paintFinish from '../assets/images/painting/step-finish.webp'
+import paintResult from '../assets/images/painting/result-living.webp'
+
 const PROJECT_CAPTION = 'Eleven B Site Sense project'
 
 // Each service uses a locally bundled, subject-specific design illustration.
@@ -187,7 +194,24 @@ export const serviceMedia = {
       { image: stampedGrassPhoto, alt: 'Stamped concrete slabs separated by grass strips in front of a modern duplex, by Eleven B Site Sense', fallbackSrc: stampedPreview, fallbackLabel: 'Stamped paving illustration', position: '50% 70%', title: 'Stamped slabs with grass joints', description: 'A modern arrival where textured slabs meet soft green lines.', caption: PROJECT_CAPTION },
     ],
   },
-  painting: entry('painting', null, paintingPreview,
-    'Interior painting and professional wall finishing reference',
-    'Fresh colour. Carefully finished.'),
+  painting: {
+    ...entry('painting', paintResult, paintingPreview,
+      'Living room with a deep teal feature wall, light grey walls and styled furniture',
+      'Fresh colour. Carefully finished.', '50% 40%'),
+    imageCaption: 'Illustrative image',
+    processImage: paintRoll,
+    processAlt: 'Painter rolling white emulsion onto an interior wall',
+    processSteps: [
+      { label: 'Surface preparation', text: 'Old, flaking paint scraped back and the wall cleaned so new paint bonds well.', image: paintPrep, alt: 'Roller applying fresh white paint beside a wall with peeling old paint' },
+      { label: 'Filling & skimming', text: 'Cracks and joints filled, then the wall skimmed smooth before priming.', image: paintSkim, alt: 'Plasterer skimming wall joints smooth with a trowel' },
+      { label: 'Painting', text: 'Primer and top coats applied evenly, with clean lines at edges and corners.', image: paintRoll, alt: 'Painter rolling paint onto a wall with an extension pole' },
+      { label: 'Final finish', text: 'Touch-ups done, the room cleaned and your space handed back ready to use.', image: paintFinish, alt: 'Freshly painted grey room with a lit ceiling and light wooden floor' },
+    ],
+    galleryTitle: 'Colour, carefully finished.',
+    galleryDescription: 'Illustrative examples of finished painting.',
+    gallery: [
+      { image: paintResult, alt: 'Living room with a deep teal feature wall', fallbackSrc: paintingPreview, fallbackLabel: 'Painting illustration', position: '50% 50%', title: 'Feature wall in deep teal', description: 'One bold wall to give the room character, balanced by soft grey.', caption: 'Illustrative image' },
+      { image: paintFinish, alt: 'Empty room painted in two shades of grey', fallbackSrc: paintingPreview, fallbackLabel: 'Painting illustration', position: '50% 50%', title: 'Two-tone grey finish', description: 'Darker and lighter greys used together for depth and calm.', caption: 'Illustrative image' },
+    ],
+  },
 }
