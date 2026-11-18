@@ -64,6 +64,15 @@ import paintRoll from '../assets/images/painting/step-painting.webp'
 import paintFinish from '../assets/images/painting/step-finish.webp'
 import paintResult from '../assets/images/painting/result-living.webp'
 
+// Illustrative interior photography.
+import intMood from '../assets/images/interior/step-moodboard.webp'
+import intFabrics from '../assets/images/interior/step-fabrics.webp'
+import intPanels from '../assets/images/interior/step-panels.webp'
+import intFinished from '../assets/images/interior/step-finished.webp'
+import intResult from '../assets/images/interior/result-lounge.webp'
+import intBedroom from '../assets/images/interior/gallery-bedroom.webp'
+import intWall from '../assets/images/interior/gallery-wall-finishes.webp'
+
 const PROJECT_CAPTION = 'Eleven B Site Sense project'
 
 // Each service uses a locally bundled, subject-specific design illustration.
@@ -139,9 +148,26 @@ export const serviceMedia = {
       { image: ceilCove, alt: 'Living room ceiling with warm cove lighting and recessed spotlights', fallbackSrc: ceilingLightingPreview, fallbackLabel: 'Cove lighting detail', position: '50% 40%', title: 'Recessed & cove lighting', description: 'Lighting planned into the ceiling, rather than added at the end.', caption: 'Illustrative image' },
     ],
   },
-  interior: entry('interior-design', null, interiorPreview,
-    'Styled living interior with considered furnishings, colours, and decorative accents',
-    'A space with your signature.'),
+  interior: {
+    ...entry('interior-design', intResult, interiorPreview,
+      'Lounge with a lit P.O.P. ceiling, cream sofas, pale blue armchairs and a patterned rug',
+      'A space with your signature.', '50% 50%'),
+    imageCaption: 'Illustrative image',
+    processImage: intPanels,
+    processAlt: 'Bedroom feature wall finished with wood and black fluted panels and wall lights',
+    processSteps: [
+      { label: 'Concept & moodboard', text: 'Your style, colours and finishes brought together on one board before any work begins.', image: intMood, alt: 'Interior moodboard with marble, brass fittings, cabinet samples and colour swatches' },
+      { label: 'Materials & samples', text: 'Fabrics, wall finishes and furnishings chosen and approved with you.', image: intFabrics, alt: 'Hand holding a fan of upholstery fabric samples in many colours' },
+      { label: 'Installation & styling', text: 'Wall panels, lighting, furniture and artwork installed and arranged to the plan.', image: intPanels, alt: 'Bedroom with wood and fluted feature panels, wall lights and an upholstered bed' },
+      { label: 'Finished space', text: 'Every detail checked and your space handed over, ready to live in.', image: intFinished, alt: 'Finished living and dining area with grey sofas, marble floor and lit ceiling' },
+    ],
+    galleryTitle: 'Interiors with a signature.',
+    galleryDescription: 'Illustrative examples of finished interiors.',
+    gallery: [
+      { image: intBedroom, alt: 'Bedroom with a brown upholstered bed, fluted wall panel, round mirror and ring pendant light', fallbackSrc: interiorPreview, fallbackLabel: 'Interior illustration', position: '50% 50%', title: 'Warm, modern bedroom', description: 'Soft browns, a fluted feature wall and statement lighting.', caption: 'Illustrative image' },
+      { image: intWall, alt: 'Rolls of marble-effect wall finishes in white, gold and blue', fallbackSrc: interiorPreview, fallbackLabel: 'Interior illustration', position: '50% 50%', title: 'Decorative wall finishes', description: 'Marble-effect and patterned finishes to give walls character.', caption: 'Illustrative image' },
+    ],
+  },
   tiling: {
     ...entry('tiling', tileHall, tilePreview,
       'Bright hall finished with large white marble-effect floor tiles and a P.O.P. ceiling',
