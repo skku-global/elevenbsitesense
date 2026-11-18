@@ -3,9 +3,9 @@ import { ArrowRight } from 'lucide-react'
 import SiteImage from './SiteImage'
 import Reveal from './Reveal'
 
-export default function PageIntro({ eyebrow, title, description, image, alt, breadcrumbs = [], children, className = '', fallbackSrc, fallbackAlt, fallbackLabel, imagePosition, imageCaption = 'Architectural inspiration · Stock imagery', mediaSubject }) {
+export default function PageIntro({ eyebrow, title, description, image, alt, breadcrumbs = [], children, className = '', fallbackSrc, fallbackAlt, fallbackLabel, imagePosition, imageCaption = 'Architectural inspiration · Stock imagery', mediaSubject, media }) {
   return (
-    <section className={`page-intro${image ? ' page-intro--image' : ''} ${className}`}>
+    <section className={`page-intro${image || media ? ' page-intro--image' : ''} ${className}`}>
       <div className="container page-intro-inner">
         <Reveal className="page-intro-copy">
           <nav className="breadcrumbs" aria-label="Breadcrumb">
@@ -30,7 +30,8 @@ export default function PageIntro({ eyebrow, title, description, image, alt, bre
           </p>
           {children}
         </Reveal>
-        {image && <div className="page-intro-image">
+        {media && <div className="page-intro-image page-intro-media">{media}</div>}
+        {image && !media && <div className="page-intro-image">
           <SiteImage
             src={image}
             alt={alt}

@@ -8,6 +8,7 @@ import Button from '../components/Button'
 import Reveal from '../components/Reveal'
 import SEO from '../components/SEO'
 import ServiceImageGallery from '../components/ServiceImageGallery'
+import ProcessResult from '../components/ProcessResult'
 import NotFound from './NotFound'
 import { getService, services } from '../data/services'
 
@@ -38,6 +39,7 @@ export default function ServiceDetails() {
         imagePosition={service.imagePosition}
         imageCaption={service.imageCaption}
         mediaSubject={service.mediaSubject}
+        media={service.processImage ? <ProcessResult service={service} /> : null}
         breadcrumbs={[{ label: 'Services', to: '/services' }, { label: service.title }]}
       >
         <Button to={enquiryPath} diagonal>Request a Quote</Button>
@@ -89,6 +91,18 @@ export default function ServiceDetails() {
               description="A practical overview. The exact sequence and programme are agreed to suit your particular project."
             />
           </Reveal>
+          {service.processSteps ? (
+            <div className="process-grid process-grid--photos">
+              {service.processSteps.map((step, index) => <Reveal className="process-step process-step--photo" key={step.label} delay={index * 0.05}>
+                <div className="process-step-image">
+                  <img src={step.image} alt={step.alt} loading="lazy" decoding="async" width={900} height={600} />
+                </div>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <h3>{step.label}</h3>
+                <p>{step.text}</p>
+              </Reveal>)}
+            </div>
+          ) : (
           <div className="process-grid">
             {service.process.map((step, index) => <Reveal className="process-step" key={step} delay={index * 0.05}>
               <span>
@@ -102,6 +116,7 @@ export default function ServiceDetails() {
               </p>
             </Reveal>)}
           </div>
+          )}
         </div>
       </section>
       <section className="section related-section">

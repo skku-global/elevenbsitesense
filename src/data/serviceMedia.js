@@ -17,6 +17,13 @@ import interlockYellowPhoto from '../assets/images/projects/interlock-paving-yel
 import stampedDarkPhoto from '../assets/images/projects/stamped-concrete-dark.webp'
 import stampedGrassPhoto from '../assets/images/projects/duplex-grass-paving.webp'
 
+// Illustrative stock photography (Unsplash licence) for the General Building page.
+import buildResult from '../assets/images/construction/result-villa.webp'
+import buildProcess from '../assets/images/construction/process-concrete-pour.webp'
+import stepSite from '../assets/images/construction/step-site-materials.webp'
+import stepFoundation from '../assets/images/construction/step-foundation-rebar.webp'
+import stepStructure from '../assets/images/construction/step-structure-formwork.webp'
+
 const PROJECT_CAPTION = 'Eleven B Site Sense project'
 
 // Each service uses a locally bundled, subject-specific design illustration.
@@ -35,9 +42,20 @@ const entry = (subject, photo, preview, alt, overviewTitle, imagePosition = '50%
 })
 
 export const serviceMedia = {
-  construction: entry('construction', null, constructionPreview,
-    'Structural construction work and professionals working on a building site',
-    'A strong foundation for your vision.'),
+  construction: {
+    ...entry('construction', buildResult, constructionPreview,
+      'Finished modern villa with timber cladding, glass balconies and a swimming pool',
+      'A strong foundation for your vision.', '50% 55%'),
+    imageCaption: 'Illustrative image',
+    processImage: buildProcess,
+    processAlt: 'Builders levelling a freshly poured concrete slab over steel reinforcement',
+    processSteps: [
+      { label: 'Site & materials', text: 'Site prepared, materials sourced and the build set out to the agreed plan.', image: stepSite, alt: 'Workers turning a pile of granite chippings on a building site' },
+      { label: 'Foundation', text: 'Steel reinforcement and foundations laid to the drawings and site conditions.', image: stepFoundation, alt: 'Builders fixing formwork beside steel reinforcement in a foundation trench' },
+      { label: 'Structure', text: 'Columns and slabs cast in stages, with progress updates at each milestone.', image: stepStructure, alt: 'Workers assembling column formwork and scaffolding on a building site' },
+      { label: 'Finish & handover', text: 'Finishes completed, the work inspected, and your building handed over.', image: buildResult, alt: 'Finished modern villa with a swimming pool' },
+    ],
+  },
   pool: {
     ...entry('swimming-pool', poolDeckPhoto, poolPreview,
       'Finished Eleven B Site Sense swimming pool with blue tiles and a wood-effect tiled poolside deck',
