@@ -1613,3 +1613,16 @@
 .process-grid--photos .process-step--photo > .process-step-image { order: 3; margin: 0 0 16px; aspect-ratio: auto !important; background: none; display: block; }
 .process-grid--photos .process-step--photo > .process-step-image img { height: auto; object-fit: contain; }
 .process-grid--photos .process-step--photo > p { order: 4; }
+
+/* TikTok project videos */
+.tt-video { position: relative; aspect-ratio: 9 / 16; background: #000; overflow: hidden; }
+.tt-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.tt-section { background: #0c2130; color: #fff; }
+.tt-section .eyebrow { color: #7fd3ec; }
+.tt-title { font-family: var(--font-display, 'Cormorant Garamond', serif); font-weight: 500; font-size: clamp(38px, 4.6vw, 58px); line-height: 1.08; color: #fff; margin: 12px 0 12px; }
+.tt-title em { color: #e9cf9e; }
+.tt-text { color: #ffffffcc; font-size: 18px; margin: 0 0 40px; }
+.tt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.tt-more { display: inline-block; margin-top: 34px; color: #7fd3ec; font-weight: 700; border-bottom: 2px solid; }
+@media (max-width: 900px) { .tt-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .tt-grid { grid-template-columns: 1fr; } }

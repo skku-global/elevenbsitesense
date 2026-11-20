@@ -8,6 +8,8 @@ import Reveal from '../components/Reveal'
 import { projects, projectCategories } from '../data/projects'
 import { company } from '../data/company'
 import { media } from '../data/media'
+import TikTokVideo from '../components/TikTokVideo'
+import { tiktokVideos, TIKTOK_PROFILE } from '../data/tiktok'
 
 export default function Projects() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -28,6 +30,19 @@ export default function Projects() {
         alt="Modern home with carefully composed architecture and outdoor spaces"
         breadcrumbs={[{ label: 'Projects' }]}
       />
+      <section className="section tt-section" id="videos">
+        <div className="container">
+          <Reveal>
+            <p className="eyebrow">OUR WORK ON VIDEO</p>
+            <h2 className="tt-title">Real projects,<br /><em>filmed on site.</em></h2>
+            <p className="tt-text">Pools and finishes completed by {company.brandName}. Press play to watch.</p>
+          </Reveal>
+          <div className="tt-grid">
+            {tiktokVideos.map((id) => <TikTokVideo id={id} key={id} />)}
+          </div>
+          <a className="tt-more" href={TIKTOK_PROFILE} target="_blank" rel="noreferrer">More on TikTok: @elevenbsitesense →</a>
+        </div>
+      </section>
       <section className="section portfolio-section">
         <div className="container">
           <Reveal>

@@ -4,6 +4,8 @@ import SEO from '../components/SEO'
 import Reveal from '../components/Reveal'
 import { company, getWhatsAppUrl } from '../data/company'
 import '../styles/home-pool.css'
+import TikTokVideo from '../components/TikTokVideo'
+import { tiktokVideos, TIKTOK_PROFILE as TIKTOK } from '../data/tiktok'
 
 import heroImg from '../assets/images/pool/result-villa-pool.webp'
 import curvedImg from '../assets/images/pool/gallery-curved-mosaic.webp'
@@ -54,12 +56,6 @@ const steps = [
   { img: ownDeck, title: 'Fill & handover', text: 'Filled, tested and handed over, ready to swim.' },
 ]
 
-const reels = [
-  { img: ownJacuzzi, label: 'Jacuzzi pool walkthrough' },
-  { img: renderImg, label: 'Rendering the pool shell' },
-  { img: mosaicImg, label: 'Mosaic tiling' },
-  { img: ownDeck, label: 'Finished pool' },
-]
 
 const others = [
   { img: oBuild, title: 'Building', to: '/services/general-building-contracting' },
@@ -70,9 +66,7 @@ const others = [
   { img: oInt, title: 'Interior', to: '/services/artwork-and-interior-design' },
 ]
 
-const TIKTOK = 'https://www.tiktok.com/@elevenbsitesense'
-// Add more TikTok video IDs here (the long number at the end of each video link).
-const tiktokVideos = ['7706856813475466548', '7705153063761218836', '7697011919403715861']
+
 
 export default function Home() {
   return (
@@ -147,20 +141,10 @@ export default function Home() {
           <a href={TIKTOK} target="_blank" rel="noreferrer">@elevenbsitesense on TikTok →</a>
         </div>
         <div className="ph-reels">
-          {tiktokVideos.map((id) => <div className="ph-reel ph-reel--video" key={id}>
-            <iframe
-              src={`https://www.tiktok.com/player/v1/${id}?music_info=0&description=0&rel=0`}
-              title="Eleven B Site Sense pool project on TikTok"
-              loading="lazy"
-              allow="fullscreen; encrypted-media"
-              allowFullScreen
-            />
-          </div>)}
-          {reels.slice(0, 4 - tiktokVideos.length).map((r) => <a className="ph-reel" href={TIKTOK} target="_blank" rel="noreferrer" key={r.label}>
-            <img src={r.img} alt="" loading="lazy" />
-            <span className="ph-play" aria-hidden="true">▶</span>
-            <span className="ph-reel-label">{r.label}</span>
-          </a>)}
+          {tiktokVideos.slice(0, 4).map((id) => <TikTokVideo id={id} key={id} />)}
+        </div>
+        <div className="ph-actions ph-actions--dark">
+          <Link className="ph-btn ph-btn--gold" to="/projects#videos">Watch all {tiktokVideos.length} project videos →</Link>
         </div>
       </div></section>
 
