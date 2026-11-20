@@ -1,161 +1,180 @@
-import { ArrowDown, ArrowUpRight, Check, Layers3, Ruler, ShieldCheck } from 'lucide-react'
-import { testimonials } from '../data/testimonials'
 import { Link } from 'react-router-dom'
-import Button from '../components/Button'
-import SectionHeading from '../components/SectionHeading'
-import ServiceCard from '../components/ServiceCard'
-import ProjectCard from '../components/ProjectCard'
-import ClientFeedback from '../components/ClientFeedback'
-import OfficeAddress from '../components/OfficeAddress'
-import SiteImage from '../components/SiteImage'
-import ContactCTA from '../components/ContactCTA'
-import Reveal from '../components/Reveal'
+import { Check, Phone } from 'lucide-react'
 import SEO from '../components/SEO'
-import { company } from '../data/company'
-import { media } from '../data/media'
-import { services } from '../data/services'
-import { projects } from '../data/projects'
+import Reveal from '../components/Reveal'
+import { company, getWhatsAppUrl } from '../data/company'
+import '../styles/home-pool.css'
 
-const promises = [
-  { Icon: Ruler, title: 'Precision in every detail', text: 'A considered approach to every stage.' },
-  { Icon: Layers3, title: 'From foundation to finish', text: 'Eight services. One connected vision.' },
-  { Icon: ShieldCheck, title: 'Built around your vision', text: 'Your ideas at the heart of the process.' },
+import heroImg from '../assets/images/pool/result-villa-pool.webp'
+import curvedImg from '../assets/images/pool/gallery-curved-mosaic.webp'
+import mosaicImg from '../assets/images/pool/step-mosaic.webp'
+import renderImg from '../assets/images/pool/process-rendering.webp'
+import digImg from '../assets/images/pool/step-excavation.webp'
+import shellImg from '../assets/images/pool/step-structure.webp'
+import ownDeck from '../assets/images/projects/swimming-pool-tiled-deck.webp'
+import ownJacuzzi from '../assets/images/projects/pool-and-jacuzzi.webp'
+import oBuild from '../assets/images/construction/result-villa.webp'
+import oLock from '../assets/images/interlock/result-driveway.webp'
+import oTile from '../assets/images/tiling/result-hall.webp'
+import oPop from '../assets/images/ceiling/result-living.webp'
+import oPaint from '../assets/images/painting/result-living.webp'
+import oInt from '../assets/images/interior/result-lounge.webp'
+
+const POOL = '/services/swimming-pool-construction'
+const waPool = getWhatsAppUrl(`Hello ${company.contactPerson}, I saw your website and I'm interested in a swimming pool.`)
+const waService = getWhatsAppUrl(`Hello ${company.contactPerson}, I'd like to book pool maintenance or a repair.`)
+
+function WaIcon() {
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.6 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3.1s.8-2.2 1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.4z"/></svg>
+}
+
+const trust = [
+  ['10+', 'Years building pools'],
+  ['50+', 'Pools completed'],
+  ['CAC', 'Registered company'],
+  ['Nationwide', 'Lagos · Ibadan · Abuja & more'],
 ]
+
+const projects = [
+  { img: ownDeck, own: true, meta: 'Residential · Ibadan', title: 'Family pool with tiled deck' },
+  { img: ownJacuzzi, own: true, meta: 'Residential', title: 'Pool with built-in jacuzzi' },
+  { img: curvedImg, own: false, meta: 'Mosaic finish', title: 'Curved mosaic pool' },
+]
+
+const poolServices = [
+  { title: 'New Pools', text: 'Custom pools designed around your home and budget.', items: ['Design & layout', 'Excavation & structure', 'Plumbing & filtration', 'Mosaic tiling & lighting'] },
+  { title: 'Maintenance', text: 'Keep your water clear, safe and ready all year.', items: ['Weekly or monthly visits', 'Water testing & balancing', 'Cleaning & vacuuming', 'Equipment checks'] },
+  { title: 'Repair & Renovation', text: 'Bring an old or leaking pool back to life.', items: ['Leak detection & repair', 'Re-tiling & resurfacing', 'Pump & filter servicing', 'Lighting upgrades'] },
+]
+
+const steps = [
+  { img: digImg, title: 'Design & excavation', text: 'Site visit, design and quote, then the pool is dug to shape.' },
+  { img: shellImg, title: 'Structure & plumbing', text: 'Reinforced concrete shell with pipes, inlets and lights built in.' },
+  { img: mosaicImg, title: 'Waterproofing & tiling', text: 'Sealed and finished in mosaic tiles with clean lines.' },
+  { img: ownDeck, title: 'Fill & handover', text: 'Filled, tested and handed over, ready to swim.' },
+]
+
+const reels = [
+  { img: ownJacuzzi, label: 'Jacuzzi pool walkthrough' },
+  { img: renderImg, label: 'Rendering the pool shell' },
+  { img: mosaicImg, label: 'Mosaic tiling' },
+  { img: ownDeck, label: 'Finished pool' },
+]
+
+const others = [
+  { img: oBuild, title: 'Building', to: '/services/general-building-contracting' },
+  { img: oLock, title: 'Interlock', to: '/services/interlock-paving' },
+  { img: oTile, title: 'Tiling', to: '/services/tiling' },
+  { img: oPop, title: 'P.O.P. Ceiling', to: '/services/pop-ceiling-installation' },
+  { img: oPaint, title: 'Painting', to: '/services/painting' },
+  { img: oInt, title: 'Interior', to: '/services/artwork-and-interior-design' },
+]
+
+const TIKTOK = 'https://www.tiktok.com/@elevenbsitesense'
 
 export default function Home() {
   return (
-    <>
+    <div className="ph">
       <SEO
-        title="Construction & Building Services"
-        description={`${company.brandName} brings building, swimming pools, P.O.P. ceilings, interiors, tiling, paving, and painting together. Discuss your next project.`}
+        title="Luxury Swimming Pools: Construction, Maintenance & Repair"
+        description={`${company.brandName} designs, builds, maintains and repairs swimming pools for homes, hotels and estates across Nigeria. Chat on WhatsApp or request a free quote.`}
       />
-      <section className="home-hero" aria-labelledby="home-heading">
-        <SiteImage
-          className="home-hero-image"
-          src={media.hero}
-          alt="Contemporary white villa with expansive windows, a swimming pool, and landscaped outdoor living space"
-          eager
-          width={2200}
-          height={1400}
-          position="center 56%"
-        />
-        <div className="hero-shade" aria-hidden="true" />
-        <div className="container home-hero-inner">
-          <Reveal className="hero-copy">
-            <p className="eyebrow eyebrow--light">EXPERTISE FROM FOUNDATION TO FINISH</p>
-            <h1 id="home-heading">We Build It<br /><em>Better.</em></h1>
-            <p className="hero-description">{company.descriptionShort}</p>
-            <div className="hero-actions">
-              <Button to="/services">Explore Our Services</Button>
-              <Button to="/contact" variant="white-outline" diagonal>Contact Us</Button>
-            </div>
-          </Reveal>
-          <div className="hero-bottom">
-            <a href="#our-services" className="hero-scroll"><span className="hero-scroll-icon">
-                <ArrowDown size={18} strokeWidth={1.5} aria-hidden="true" />
-              </span>DISCOVER THE POSSIBILITIES</a>
-            <p>ARCHITECTURAL INSPIRATION<span>Illustrative design reference</span></p>
+
+      <section className="ph-hero" aria-labelledby="home-heading">
+        <img src={heroImg} alt="Modern white villa with a large blue-tiled swimming pool" fetchpriority="high" />
+        <div className="ph-wrap">
+          <p className="ph-eyebrow ph-eyebrow--light">Swimming pool specialists · Nigeria</p>
+          <h1 id="home-heading">Luxury Swimming Pools,<br /><em>Built to Last.</em></h1>
+          <p className="ph-hero-text">We design, build, maintain and repair swimming pools for homes, hotels and estates, from the first drawing to the first swim.</p>
+          <div className="ph-actions">
+            {waPool && <a className="ph-btn ph-btn--wa" href={waPool} target="_blank" rel="noreferrer"><WaIcon />Chat on WhatsApp</a>}
+            <Link className="ph-btn ph-btn--line" to="/contact">Request a Free Quote →</Link>
           </div>
         </div>
-        <span className="hero-side-label" aria-hidden="true">THE ART OF BUILDING WELL</span>
       </section>
-      <section className="promise-strip" aria-label="Our approach">
-        <div className="container promise-grid">
-          {promises.map(({ Icon, title, text }) => <div className="promise" key={title}>
-            <Icon size={28} strokeWidth={1.2} aria-hidden="true" />
-            <div>
-              <h2>
-                {title}
-              </h2>
-              <p>
-                {text}
-              </p>
-            </div>
+
+      <div className="ph-trust"><div className="ph-wrap">
+        {trust.map(([b, t]) => <div key={t}><b>{b}</b><span>{t}</span></div>)}
+      </div></div>
+
+      <section className="ph-sec"><div className="ph-wrap">
+        <div className="ph-head">
+          <div><p className="ph-eyebrow">Our pool projects</p><h2>Real pools.<br /><em>Real clients.</em></h2></div>
+          <Link to="/projects">See all projects →</Link>
+        </div>
+        <div className="ph-projects">
+          {projects.map((p) => <Link className="ph-proj" to={POOL} key={p.title}>
+            <img src={p.img} alt={p.title} loading="lazy" />
+            {p.own && <span className="ph-badge">Our work</span>}
+            <div className="ph-cap"><div className="ph-meta">{p.meta}</div><h3>{p.title}</h3></div>
+          </Link>)}
+        </div>
+      </div></section>
+
+      <section className="ph-sec ph-sand"><div className="ph-wrap">
+        <div className="ph-head"><div><p className="ph-eyebrow">Pool services</p><h2>Everything your pool needs,<br /><em>in one place.</em></h2></div></div>
+        <div className="ph-svc">
+          {poolServices.map((s, i) => <Reveal className="ph-card" key={s.title} delay={i * 0.06}>
+            <span className="ph-num">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+            <ul>{s.items.map((it) => <li key={it}><Check size={16} strokeWidth={2.5} aria-hidden="true" />{it}</li>)}</ul>
+          </Reveal>)}
+        </div>
+        <div className="ph-actions ph-actions--dark">
+          <Link className="ph-btn ph-btn--gold" to={POOL}>See how we build pools →</Link>
+          {waService && <a className="ph-btn ph-btn--outline" href={waService} target="_blank" rel="noreferrer">Book maintenance or repair</a>}
+        </div>
+      </div></section>
+
+      <section className="ph-sec"><div className="ph-wrap">
+        <div className="ph-head"><div><p className="ph-eyebrow">How we build your pool</p><h2>Four clear steps,<br /><em>no surprises.</em></h2></div></div>
+        <div className="ph-steps">
+          {steps.map((s, i) => <div className="ph-step" key={s.title}>
+            <img src={s.img} alt={s.title} loading="lazy" />
+            <b>{String(i + 1).padStart(2, '0')}</b>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
           </div>)}
         </div>
-      </section>
-      <section className="section home-services" id="our-services">
-        <div className="container">
-          <Reveal>
-            <SectionHeading
-              eyebrow="01 / OUR EXPERTISE"
-              title={<>Every detail.<br />Every possibility.</>}
-              description="From ambitious new builds to the finishes that make a space yours, our expertise brings your ideas together."
-            >
-              <Link className="text-link" to="/services">View all services <ArrowUpRight size={17} aria-hidden="true" /></Link>
-            </SectionHeading>
-          </Reveal>
-          <div className="services-grid services-grid--full">
-            {services.map((service, index) => <Reveal key={service.slug} delay={(index % 4) * 0.06}>
-              <ServiceCard service={service} index={index} />
-            </Reveal>)}
-          </div>
+      </div></section>
+
+      <section className="ph-sec ph-navy"><div className="ph-wrap">
+        <div className="ph-head">
+          <div><p className="ph-eyebrow ph-eyebrow--aqua">Watch our work</p><h2>See it <em>for yourself.</em></h2></div>
+          <a href={TIKTOK} target="_blank" rel="noreferrer">@elevenbsitesense on TikTok →</a>
         </div>
-      </section>
-      <section className="section home-about">
-        <div className="container home-about-grid">
-          <Reveal className="home-about-visual">
-            <SiteImage
-              src={media.architecture}
-              alt="Sunlit contemporary interior with natural materials and thoughtful architectural detailing"
-              width={1000}
-              height={1200}
-            />
-            <div className="about-image-note">
-              <span className="small-label">THE {company.brandName} APPROACH</span>
-              <p>Purpose in the plan.<br /><em>Care in the craft.</em></p>
-            </div>
-          </Reveal>
-          <Reveal className="home-about-copy">
-            <p className="eyebrow">02 / A BETTER WAY TO BUILD</p>
-            <h2>Great spaces start<br />with a clear vision.</h2>
-            <p>{company.descriptionShort}</p>
-            <p>{company.mission}</p>
-            <ul className="check-list">
-              {company.strengths.slice(0, 3).map((strength) => <li key={strength}><Check size={16} aria-hidden="true" />{strength}</li>)}
-            </ul>
-            <Button to="/about" variant="outline" diagonal>Discover our approach</Button>
-            <div className="company-facts">
-              <p className="company-registration-summary">Registered in Nigeria <span aria-hidden="true">·</span> <Link to="/about">RC {company.rcNumber}<ArrowUpRight size={13} aria-hidden="true" /></Link></p>
-              <OfficeAddress />
-            </div>
-          </Reveal>
+        <div className="ph-reels">
+          {reels.map((r) => <a className="ph-reel" href={TIKTOK} target="_blank" rel="noreferrer" key={r.label}>
+            <img src={r.img} alt="" loading="lazy" />
+            <span className="ph-play" aria-hidden="true">▶</span>
+            <span className="ph-reel-label">{r.label}</span>
+          </a>)}
         </div>
-      </section>
-      <section className="section home-projects">
-        <div className="container">
-          <Reveal>
-            <SectionHeading
-              eyebrow="03 / PROJECT INSPIRATION"
-              title={<>A sense of<br />what’s possible.</>}
-              description="Considered architecture, inviting interiors, and inspiring outdoor spaces. Explore a few ideas for your next chapter."
-            >
-              <Link className="text-link" to="/projects">Explore the concepts <ArrowUpRight size={17} aria-hidden="true" /></Link>
-            </SectionHeading>
-          </Reveal>
-          <p className="demonstration-note"><span>DEMONSTRATION PORTFOLIO</span> These concepts use stock imagery and do not represent completed company projects.</p>
-          <div className="featured-projects">
-            {projects.slice(0, 3).map((project, index) => <Reveal key={project.slug} className={index === 0 ? 'featured-project-main' : ''} delay={index * 0.05}>
-              <ProjectCard project={project} featured={index === 0} />
-            </Reveal>)}
-          </div>
+      </div></section>
+
+      <section className="ph-sec"><div className="ph-wrap">
+        <div className="ph-head"><div><p className="ph-eyebrow">We also build</p><h2>Other <em>services.</em></h2></div><Link to="/services">All services →</Link></div>
+        <div className="ph-others">
+          {others.map((o) => <Link className="ph-other" to={o.to} key={o.title}>
+            <img src={o.img} alt={o.title} loading="lazy" />
+            <h3>{o.title}</h3>
+          </Link>)}
         </div>
-      </section>
-      {testimonials.length > 0 && <section className="section home-testimonials">
-        <div className="container">
-          <Reveal>
-            <SectionHeading
-              eyebrow="04 / THE CLIENT EXPERIENCE"
-              title="Good work. Lasting impressions."
-              description="A space for the experiences and perspectives of the people we build for."
-            >
-              <Link className="text-link" to="/testimonials">View testimonials <ArrowUpRight size={17} aria-hidden="true" /></Link>
-            </SectionHeading>
-          </Reveal>
-          <ClientFeedback />
+      </div></section>
+
+      <section className="ph-sec ph-cta"><div className="ph-wrap">
+        <p className="ph-eyebrow ph-eyebrow--light">Start your pool</p>
+        <h2>Ready for your <em>dream pool?</em></h2>
+        <p className="ph-cta-text">Tell us about your space. We'll visit, advise and send a clear quote, in Nigeria or while you're abroad.</p>
+        <div className="ph-actions ph-actions--center">
+          {waPool && <a className="ph-btn ph-btn--wa" href={waPool} target="_blank" rel="noreferrer"><WaIcon />Chat on WhatsApp</a>}
+          <Link className="ph-btn ph-btn--gold" to="/contact">Request a Free Quote →</Link>
         </div>
-      </section>}
-      <ContactCTA />
-    </>
+        <div className="ph-phones">
+          {company.phoneNumbers.map((p) => <a key={p.number} href={`tel:+${p.international}`}><Phone size={16} aria-hidden="true" />{p.number}</a>)}
+        </div>
+      </div></section>
+    </div>
   )
 }
