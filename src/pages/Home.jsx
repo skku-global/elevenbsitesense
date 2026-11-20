@@ -72,7 +72,7 @@ const others = [
 
 const TIKTOK = 'https://www.tiktok.com/@elevenbsitesense'
 // Add more TikTok video IDs here (the long number at the end of each video link).
-const tiktokVideos = ['7706856813475466548']
+const tiktokVideos = ['7706856813475466548', '7705153063761218836', '7697011919403715861']
 
 export default function Home() {
   return (
