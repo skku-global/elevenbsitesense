@@ -7,7 +7,7 @@ import '../styles/home-pool.css'
 import TikTokVideo from '../components/TikTokVideo'
 import { tiktokVideos, TIKTOK_PROFILE as TIKTOK } from '../data/tiktok'
 
-import heroImg from '../assets/images/pool/result-villa-pool.webp'
+import heroImg from '../assets/images/pool/hero-ai.webp'
 import curvedImg from '../assets/images/pool/gallery-curved-mosaic.webp'
 import mosaicImg from '../assets/images/pool/step-mosaic.webp'
 import renderImg from '../assets/images/pool/process-rendering.webp'
@@ -77,7 +77,7 @@ export default function Home() {
       />
 
       <section className="ph-hero" aria-labelledby="home-heading">
-        <img src={heroImg} alt="Modern white villa with a large blue-tiled swimming pool" fetchpriority="high" />
+        <img src={heroImg} alt="Modern villa with a large turquoise mosaic swimming pool at sunset" fetchpriority="high" />
         <div className="ph-wrap">
           <p className="ph-eyebrow ph-eyebrow--light">Swimming pool specialists · Nigeria</p>
           <h1 id="home-heading">Luxury Swimming Pools,<br /><em>Built to Last.</em></h1>

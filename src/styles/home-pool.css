@@ -28,7 +28,7 @@
 
 /* Hero */
 .ph-hero { position: relative; min-height: calc(100svh - var(--header-height, 88px) - 34px); min-height: 640px; height: calc(100svh - var(--header-height, 88px) - 34px); max-height: 980px; display: flex; align-items: flex-end; overflow: hidden; color: #fff; }
-.ph-hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 62%; }
+.ph-hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 62% 60%; }
 .ph-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, #0c2130b3 0%, #0c213066 45%, #0c213011 75%), linear-gradient(180deg, #0c213040 0%, transparent 30%, #0c2130aa 100%); }
 .ph-hero .ph-wrap { position: relative; z-index: 1; padding-bottom: 80px; }
 .ph-hero h1 { color: #fff; font-size: clamp(50px, 7vw, 100px); margin: 14px 0 0; max-width: 900px; }

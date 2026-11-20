@@ -1626,3 +1626,5 @@
 .tt-more { display: inline-block; margin-top: 34px; color: #7fd3ec; font-weight: 700; border-bottom: 2px solid; }
 @media (max-width: 900px) { .tt-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 520px) { .tt-grid { grid-template-columns: 1fr; } }
+/* Crop TikTok's top name/logo bar out of view */
+.tt-video iframe { top: -76px; height: calc(100% + 76px); }
