@@ -114,3 +114,5 @@
 }
 .ph .ph-hero-text, .ph .ph-cta-text { color: #fff; }
 .ph .ph-hero-text { text-shadow: 0 1px 12px #0c213099; }
+.ph-reel--video { background: #000; }
+.ph-reel--video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }

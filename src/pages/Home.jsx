@@ -71,6 +71,8 @@ const others = [
 ]
 
 const TIKTOK = 'https://www.tiktok.com/@elevenbsitesense'
+// Add more TikTok video IDs here (the long number at the end of each video link).
+const tiktokVideos = ['7706856813475466548']
 
 export default function Home() {
   return (
@@ -145,7 +147,16 @@ export default function Home() {
           <a href={TIKTOK} target="_blank" rel="noreferrer">@elevenbsitesense on TikTok →</a>
         </div>
         <div className="ph-reels">
-          {reels.map((r) => <a className="ph-reel" href={TIKTOK} target="_blank" rel="noreferrer" key={r.label}>
+          {tiktokVideos.map((id) => <div className="ph-reel ph-reel--video" key={id}>
+            <iframe
+              src={`https://www.tiktok.com/player/v1/${id}?music_info=0&description=0&rel=0`}
+              title="Eleven B Site Sense pool project on TikTok"
+              loading="lazy"
+              allow="fullscreen; encrypted-media"
+              allowFullScreen
+            />
+          </div>)}
+          {reels.slice(0, 4 - tiktokVideos.length).map((r) => <a className="ph-reel" href={TIKTOK} target="_blank" rel="noreferrer" key={r.label}>
             <img src={r.img} alt="" loading="lazy" />
             <span className="ph-play" aria-hidden="true">▶</span>
             <span className="ph-reel-label">{r.label}</span>
