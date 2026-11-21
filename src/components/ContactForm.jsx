@@ -5,22 +5,13 @@ import Button from './Button'
 import { company, getEmailUrl, getWhatsAppUrl } from '../data/company'
 import { getService, services } from '../data/services'
 import { getProject } from '../data/projects'
-
-function validate(values) {
-  const errors = {}
-  if (values.name.trim().length < 2) errors.name = 'Please enter your full name (at least 2 characters).'
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) errors.email = 'Please enter a valid email address.'
-  if (values.phone.trim() && (!/^[+\d\s().-]+$/.test(values.phone) || !/^\d{7,15}$/.test(values.phone.replace(/\D/g, '')))) errors.phone = 'Please enter a valid phone number with 7–15 digits.'
-  if (!services.some((service) => service.slug === values.service) && values.service !== 'not-sure') errors.service = 'Please select a service, or choose “Multiple services / not sure yet”.'
-  if (values.message.trim().length < 20) errors.message = 'Please tell us a little more about your project (at least 20 characters).'
-  return errors
-}
+import { validateEnquiry as validate, normalizeEnquiry, enquiryLimits, createSubmissionId, readEnquiryResponse } from '../data/enquiry.js'
 
 export default function ContactForm() {
   const [searchParams] = useSearchParams()
   const selectedService = getService(searchParams.get('service'))?.slug || ''
   const selectedProject = getProject(searchParams.get('project'))
-  const initialValues = () => ({ name: '', email: '', phone: '', service: selectedService, message: selectedProject ? `I’m interested in a project inspired by the ${selectedProject.title} demonstration concept. My project details are: ` : '' })
+  const initialValues = () => ({ name: '', email: '', phone: '', service: selectedService, company_website: '', message: selectedProject ? `I’m interested in a project inspired by the ${selectedProject.title} demonstration concept. My project details are: ` : '' })
   const [values, setValues] = useState(initialValues)
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle')
@@ -29,6 +20,7 @@ export default function ContactForm() {
   const formRef = useRef(null)
   const statusRef = useRef(null)
   const requestRef = useRef(null)
+  const submissionRef = useRef(null)
   const live = Boolean(company.contactFormEndpoint)
 
   useEffect(() => () => requestRef.current?.abort(), [])
@@ -43,7 +35,7 @@ export default function ContactForm() {
 
   const submit = async (event) => {
     event.preventDefault()
-    if (submitting) return
+    if (submitting || requestRef.current) return
     const nextErrors = validate(values)
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length) {
@@ -59,17 +51,21 @@ export default function ContactForm() {
     requestRef.current = controller
     const timer = window.setTimeout(() => controller.abort(), 15000)
     try {
+      const normalized = normalizeEnquiry(values)
+      const signature = JSON.stringify(normalized)
+      if (submissionRef.current?.signature !== signature) submissionRef.current = { signature, id: createSubmissionId() }
       const response = await fetch(company.contactFormEndpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ ...values, name: values.name.trim(), email: values.email.trim(), phone: values.phone.trim(), message: values.message.trim(), serviceTitle: getService(values.service)?.title || 'Multiple services / not sure yet', source: company.companyName }),
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'Idempotency-Key': submissionRef.current.id },
+        body: JSON.stringify({ ...normalized, company_website: values.company_website, serviceTitle: getService(values.service)?.title || 'Multiple services / not sure yet', source: company.companyName }),
         signal: controller.signal,
       })
-      if (!response.ok) throw new Error('Submission unsuccessful')
+      await readEnquiryResponse(response, submissionRef.current.id)
       setStatus('success')
     } catch (error) {
       setStatus('error')
-      setFeedback(error.name === 'AbortError' ? 'The request took too long. Your details are still here. Please try again or use a verified direct contact option.' : 'We couldn’t send your enquiry. Your details are still here. Please try again or use a verified direct contact option.')
+      if (error.fieldErrors) setErrors(error.fieldErrors)
+      setFeedback(error.name === 'AbortError' ? 'The request took too long. Your details are still here. Please try again or contact us directly.' : error.userFacing ? error.message : 'We couldn’t send your enquiry. Your details are still here. Please try again or contact us directly.')
     } finally {
       window.clearTimeout(timer)
       requestRef.current = null
@@ -94,7 +90,7 @@ export default function ContactForm() {
     window.setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
 
-  const reset = () => { setValues(initialValues()); setErrors({}); setStatus('idle'); setFeedback('') }
+  const reset = () => { submissionRef.current = null; setValues(initialValues()); setErrors({}); setStatus('idle'); setFeedback('') }
   const description = (name) => errors[name] ? `${name}-error` : undefined
   return (
     <div className="contact-form-card" id="project-enquiry">
@@ -173,6 +169,10 @@ export default function ContactForm() {
         </p>}
         <fieldset disabled={submitting}>
           <legend className="sr-only">Your contact details and project requirements</legend>
+          <div className="sr-only" aria-hidden="true">
+            <label htmlFor="contact-company-website">Leave this field empty</label>
+            <input id="contact-company-website" name="company_website" type="text" value={values.company_website} onChange={update} tabIndex={-1} autoComplete="off" />
+          </div>
           <div className="form-row">
             <div className="form-field">
               <label htmlFor="contact-name">Full name <span aria-hidden="true">*</span></label>
@@ -184,7 +184,7 @@ export default function ContactForm() {
                 placeholder="Your full name"
                 autoComplete="name"
                 required
-                maxLength={100}
+                maxLength={enquiryLimits.name}
                 aria-invalid={Boolean(errors.name)}
                 aria-describedby={description('name')}
               />
@@ -203,7 +203,7 @@ export default function ContactForm() {
                 placeholder="Your email address"
                 autoComplete="email"
                 required
-                maxLength={254}
+                maxLength={enquiryLimits.email}
                 aria-invalid={Boolean(errors.email)}
                 aria-describedby={description('email')}
               />
@@ -223,7 +223,7 @@ export default function ContactForm() {
                 onChange={update}
                 placeholder="Your contact number"
                 autoComplete="tel"
-                maxLength={30}
+                maxLength={enquiryLimits.phone}
                 aria-invalid={Boolean(errors.phone)}
                 aria-describedby={description('phone')}
               />
@@ -262,7 +262,7 @@ export default function ContactForm() {
               onChange={update}
               rows={6}
               minLength={20}
-              maxLength={3000}
+              maxLength={enquiryLimits.message}
               required
               placeholder="Your ideas, project location, approximate scope, and any questions you have…"
               aria-invalid={Boolean(errors.message)}

@@ -8,6 +8,7 @@ import { company, getCompanySchema } from '../src/data/company.js'
 // Generate local sharing artwork and the static HTML metadata from one identity.
 // These assets are bundled by Vite; the production build requires no browser.
 const root = fileURLToPath(new URL('../', import.meta.url))
+const metadataOnly = process.argv.includes('--metadata-only')
 const escape = (value) => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
 const title = `Construction & Building Services | ${company.brandName}`
 const description = `${company.brandName} brings building, swimming pools, P.O.P. ceilings, interiors, tiling, paving, and painting together. Discuss your next project.`
@@ -32,7 +33,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
 </svg>`
 const svgPath = path.join(root, 'public', 'social-card.svg')
 const pngPath = path.join(root, 'public', company.socialImage.replace(/^\//, ''))
-await writeFile(svgPath, svg)
+if (!metadataOnly) await writeFile(svgPath, svg)
 
 const metadata = [
   ['name', 'description', description],
@@ -41,6 +42,7 @@ const metadata = [
   ['property', 'og:title', title],
   ['property', 'og:description', description],
   ['property', 'og:type', 'website'],
+  ...(company.websiteUrl ? [['property', 'og:url', new URL('/', company.websiteUrl).href]] : []),
   ['property', 'og:locale', 'en_NG'],
   ['property', 'og:image', company.websiteUrl ? new URL(company.socialImage, company.websiteUrl).href : company.socialImage],
   ['property', 'og:image:alt', imageAlt],
@@ -62,8 +64,15 @@ for (const [attribute, name, value] of metadata) {
 }
 const schema = `<script id="company-identity-schema" type="application/ld+json">${JSON.stringify(getCompanySchema()).replaceAll('<', '\\u003c')}</script>`
 html = /<script id="company-identity-schema"[^>]*>[\s\S]*?<\/script>/.test(html) ? html.replace(/<script id="company-identity-schema"[^>]*>[\s\S]*?<\/script>/, () => schema) : html.replace('  </head>', `    ${schema}\n  </head>`)
+if (company.websiteUrl) {
+  const canonical = `<link rel="canonical" href="${escape(new URL('/', company.websiteUrl).href)}" />`
+  html = /<link\s+rel="canonical"[^>]*>/.test(html) ? html.replace(/<link\s+rel="canonical"[^>]*>/, () => canonical) : html.replace('  </head>', `    ${canonical}\n  </head>`)
+}
 await writeFile(indexPath, html)
 
+if (metadataOnly) {
+  console.log('Updated static company, domain, and sharing metadata; existing artwork preserved.')
+} else {
 const browser = [
   process.env.BROWSER_PATH,
   'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
@@ -84,3 +93,4 @@ execFileSync(browser, [
 ], { windowsHide: true, timeout: 30000, stdio: 'ignore' })
 if (!existsSync(pngPath)) throw new Error('The browser did not export the PNG sharing card.')
 console.log('Generated local social-card.svg, social-card.png, and branded HTML metadata.')
+}

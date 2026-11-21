@@ -19,7 +19,7 @@ export default function Contact() {
     <>
       <SEO
         title="Contact us"
-        description={`Contact ${company.brandName} about construction, pools, interiors, tiling, paving, or painting. Share your project brief and prepare a quotation enquiry.`}
+        description={`Contact ${company.brandName} about construction, pools, interiors, tiling, paving, or painting. Share your project brief and request a quotation.`}
       />
       <PageIntro
         eyebrow="YOUR VISION STARTS HERE"

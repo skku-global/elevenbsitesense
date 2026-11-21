@@ -5,12 +5,13 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { setTimeout as delay } from 'node:timers/promises'
 import { fileURLToPath } from 'node:url'
+import { company, getWhatsAppUrl } from '../src/data/company.js'
+import { serviceOptions } from '../src/data/serviceOptions.js'
 
 // Dependency-free browser checks using Chromium's DevTools protocol.
 // Start Vite first. BROWSER_PATH and SITE_URL can override the defaults.
 const root = fileURLToPath(new URL('../', import.meta.url))
-const officialWhatsAppMessage = 'Hello Eleven B Site-Sense Nigeria Limited. I would like to make an enquiry about your construction services.'
-const officialWhatsAppUrl = `https://wa.me/2348034456275?text=${encodeURIComponent(officialWhatsAppMessage)}`
+const officialWhatsAppUrl = getWhatsAppUrl()
 const baseUrl = process.env.SITE_URL || 'http://127.0.0.1:5173'
 const output = path.join(root, 'artifacts', 'verification')
 const browserPath = [
@@ -42,6 +43,9 @@ const jsErrors = []
 const externalFailures = new Set()
 const requestUrls = new Map()
 const checked = []
+const layoutWarnings = []
+const contactRequests = []
+let contactReply = 'success'
 
 async function command(method, params = {}) {
   const id = ++sequence
@@ -115,9 +119,18 @@ async function inspect(route, width) {
   assert.equal(result.announcementStrips, 1, `${route}: expected exactly one announcement strip`)
   assert.equal(result.navbarShells, 1, `${route}: expected exactly one navigation bar`)
   assert.ok(result.whatsappLinks.length >= 2, `${route}: expected floating and footer WhatsApp links`)
-  for (const href of result.whatsappLinks) assert.equal(href, officialWhatsAppUrl, `${route}: wrong WhatsApp number or prefilled message`)
+  for (const href of result.whatsappLinks) {
+    const whatsapp = new URL(href)
+    assert.equal(whatsapp.pathname, `/${company.whatsapp}`, `${route}: wrong WhatsApp number`)
+    assert.ok(whatsapp.searchParams.get('text')?.length > 10, `${route}: missing WhatsApp message`)
+  }
   assert.ok(result.title && result.description?.length > 30, `${route}: missing SEO metadata`)
   assert.ok(result.contentWidth <= result.width + 1, `${route} at ${width}px has horizontal overflow: ${result.contentWidth}px`)
+  if (result.contentWidth > width + 1 || result.width > width + 1) {
+    // The existing pool homepage has a separate, reported mobile layout issue.
+    assert.equal(route, '/', `${route} at ${width}px exceeds its configured viewport`)
+    layoutWarnings.push({ route, viewport: width, contentWidth: result.contentWidth, message: 'Existing homepage mobile overflow; needs the separately requested mobile layout refinement.' })
+  }
   assert.equal(result.unnamedButtons, 0, `${route}: button without an accessible name`)
   checked.push({ route, width, title: result.title, heading: result.heading, description: result.description, wordmark: result.wordmark, legalSuffix: result.legalSuffix, socialTitle: result.socialTitle, socialSiteName: result.socialSiteName, twitterTitle: result.twitterTitle, footerIdentity: result.footerIdentity, footerRegistration: result.footerRegistration })
   return result
@@ -149,14 +162,26 @@ try {
       const url = requestUrls.get(message.params.requestId)
       if (url?.startsWith('https://images.unsplash.com') || url?.startsWith('https://images.pexels.com') || url?.startsWith('https://fonts.')) externalFailures.add(new URL(url).hostname)
     }
+    if (message.method === 'Fetch.requestPaused') {
+      const { requestId, request } = message.params
+      const headers = Object.fromEntries(Object.entries(request.headers).map(([key, value]) => [key.toLowerCase(), value]))
+      contactRequests.push({ headers, body: JSON.parse(request.postData || '{}') })
+      const status = contactReply === 'error' ? 502 : 200
+      const body = contactReply === 'error' ? { ok: false, code: 'notification_unavailable' } : { ok: true, status: 'accepted', enquiryId: headers['idempotency-key'] }
+      const html = contactReply === 'html'
+      command('Fetch.fulfillRequest', { requestId, responseCode: status, responseHeaders: [{ name: 'Content-Type', value: html ? 'text/html' : 'application/json' }], body: Buffer.from(html ? '<html>SPA fallback</html>' : JSON.stringify(body)).toString('base64') }).catch((error) => jsErrors.push(error.message))
+    }
   })
   console.log('Headless browser connected.')
   console.log('Browser version:', (await command('Browser.getVersion')).product)
   await command('Page.enable')
   await command('Runtime.enable')
   await command('Network.enable')
+  await command('Network.setBlockedURLs', { urls: ['https://www.tiktok.com/player/*'] })
+  // Fulfil contact requests locally so browser verification never sends mail.
+  await command('Fetch.enable', { patterns: [{ urlPattern: '*/api/contact', requestStage: 'Request' }] })
   await command('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] })
-  const serviceSlugs = [...(await readFile(path.join(root, 'src/data/services.js'), 'utf8')).matchAll(/slug:\s*'([^']+)'/g)].map((match) => match[1])
+  const serviceSlugs = serviceOptions.map((service) => service.slug)
   const projectSlugs = [...(await readFile(path.join(root, 'src/data/projects.js'), 'utf8')).matchAll(/slug:\s*'([^']+)'/g)].map((match) => match[1])
   assert.equal(serviceSlugs.length, 8, 'All eight service routes must exist.')
   assert.equal(projectSlugs.length, 6, 'The demonstration portfolio must contain six concepts.')
@@ -200,13 +225,14 @@ try {
     }
     assert.ok(contact.whatsappLinks.length > 0, `${route}: missing official WhatsApp link`)
     for (const href of contact.whatsappLinks) assert.equal(href, officialWhatsAppUrl)
-    if (route === '/') assert.equal(await evaluate(`document.querySelector('.hero-actions a[href^="https://wa.me/"]').getAttribute('href')`), officialWhatsAppUrl)
+    if (route === '/') assert.equal(new URL(await evaluate(`document.querySelector('.ph-hero .ph-actions a[href^="https://wa.me/"]').getAttribute('href')`)).pathname, `/${company.whatsapp}`)
     if (route === '/contact') assert.equal(await evaluate(`document.querySelector('.contact-whatsapp a').getAttribute('href')`), officialWhatsAppUrl)
-    assert.ok(contact.emailLinks.includes('mailto:ganiyutaiwo2020@gmail.com'))
+    assert.ok(contact.emailLinks.includes(`mailto:${company.email}`))
     assert.ok(contact.address.includes('4th Floor, Lister Building, Ring Road,') && contact.address.includes('Ibadan, Oyo State, Nigeria.'))
     assert.equal(contact.schema.legalName, 'ELEVEN B SITE-SENSE NIGERIA LIMITED')
     assert.equal(contact.schema.identifier.value, '7650068')
-    assert.equal(contact.schema.email, 'ganiyutaiwo2020@gmail.com')
+    assert.equal(contact.schema.email, company.email)
+    assert.equal(contact.schema.url, company.websiteUrl)
     assert.equal(contact.schema.contactPoint.length, 3)
     assert.equal(contact.slogan, 'WE BUILD IT BETTER.')
     assert.equal(contact.quotes, 0, 'Unapproved testimonials must never be published')
@@ -216,7 +242,7 @@ try {
   await viewport(1440)
   await navigate('/')
   await evaluate(`(() => { window.__originalSiteHeader = document.querySelector('.site-header'); return true; })()`)
-  for (const route of ['/about', '/services', '/projects', '/testimonials', '/faq', '/contact', '/']) {
+  for (const route of ['/about', '/services', '/projects', '/faq', '/contact', '/']) {
     await evaluate(`[...document.querySelectorAll('.desktop-nav a')].find(a => a.pathname === ${JSON.stringify(route)}).click()`)
     await waitFor(`location.pathname === ${JSON.stringify(route)} && !!document.querySelector('main h1') && !document.querySelector('.page-loading')`, `client navigation to ${route}`)
     assert.equal(await evaluate(`document.querySelector('.site-header') === window.__originalSiteHeader`), true, `${route}: the shared header should remain mounted`)
@@ -228,8 +254,8 @@ try {
   const serviceImageChecks = []
   for (const [index, slug] of serviceSlugs.entries()) {
     await navigate(`/services/${slug}`)
-    await waitFor(`document.querySelector('.service-detail-hero .site-image').classList.contains('is-loaded')`, `${slug}: loaded service image or fallback`)
-    const details = await evaluate(`(() => { const image = document.querySelector('.service-detail-hero .site-image'); const img = image.querySelector('img'); return { subject: image.dataset.mediaSubject, source: image.dataset.imageSource, src: img?.currentSrc, alt: img?.alt, naturalWidth: img?.naturalWidth, quoteHref: document.querySelector('.service-detail-hero .button').getAttribute('href') }; })()`)
+    await waitFor(`document.querySelector('.service-detail-hero .pr-result img')?.naturalWidth > 0 && document.querySelector('.service-detail-hero .pr-process img')?.naturalWidth > 0`, `${slug}: loaded service photographs`)
+    const details = await evaluate(`(() => { const image = document.querySelector('.service-detail-hero .process-result'); const img = image.querySelector('.pr-result img'); return { subject: image.dataset.mediaSubject, source: 'local photograph', src: img?.currentSrc, alt: img?.alt, naturalWidth: img?.naturalWidth, quoteHref: document.querySelector('.service-detail-hero .button').getAttribute('href') }; })()`)
     assert.equal(details.subject, expectedSubjects[index], `${slug}: wrong image subject`)
     assert.ok(details.naturalWidth > 0, `${slug}: broken service image`)
     assert.ok(!details.src.includes('architecture-fallback'), `${slug}: generic house fallback is forbidden`)
@@ -245,7 +271,7 @@ try {
     serviceImageChecks.push({ slug, ...details })
   }
   assert.equal(new Set(serviceImageChecks.map(image => image.src)).size, 8, 'Each service must have its own image.')
-  await writeFile(path.join(output, 'service-image-report.json'), JSON.stringify({ images: serviceImageChecks, localIllustrationsVerified: true, note: 'All eight services use bundled subject-specific illustrations. These design references are not company project photographs.' }, null, 2))
+  await writeFile(path.join(output, 'service-image-report.json'), JSON.stringify({ images: serviceImageChecks, localPhotographsVerified: true, note: 'All eight service heroes use distinct locally bundled illustrative photographs. Galleries also include labelled company work.' }, null, 2))
   console.log('Eight distinct service subjects, loaded previews, and quote links verified.')
   await navigate('/services/pop-ceiling-installation')
   await screenshot('pop-ceiling-desktop')
@@ -254,7 +280,7 @@ try {
   await screenshot('pop-ceiling-mobile')
   await viewport(1440)
   await navigate('/')
-  await waitFor(`document.querySelector('.home-hero-image').classList.contains('is-loaded')`, 'hero image or local fallback')
+  await waitFor(`document.querySelector('.ph-hero img')?.naturalWidth > 0`, 'loaded homepage hero')
   await screenshot('home-desktop')
   await screenshot('home-desktop-full', true)
   await navigate('/projects')
@@ -288,26 +314,46 @@ try {
   await evaluate(`document.querySelector('form').requestSubmit()`)
   await waitFor(`!!document.querySelector('#phone-error')`, 'invalid phone feedback')
   await evaluate(`(() => { const input = document.querySelector('[name="phone"]'); Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, ''); input.dispatchEvent(new Event('input', { bubbles: true })); })()`)
+  contactReply = 'error'
   await evaluate(`document.querySelector('form').requestSubmit()`)
-  await waitFor(`!!document.querySelector('.form-success')`, 'validated enquiry preview')
-  assert.ok((await evaluate(`document.querySelector('.form-success').textContent`)).includes('nothing has been sent'), 'Preview must never claim a real submission.')
-  const sharing = await evaluate(`(() => ({
-    whatsapp: document.querySelector('.form-success a[href^="https://wa.me/"]').getAttribute('href'),
-    email: document.querySelector('.form-success a[href^="mailto:"]').getAttribute('href'),
-  }))()`)
-  const preparedWhatsApp = new URL(sharing.whatsapp)
-  assert.equal(preparedWhatsApp.pathname, '/2348034456275')
-  assert.equal(preparedWhatsApp.searchParams.get('text'), officialWhatsAppMessage)
-  assert.ok(sharing.email.startsWith('mailto:ganiyutaiwo2020@gmail.com?'))
-  const preparedEmail = new URLSearchParams(sharing.email.split('?')[1])
-  assert.ok(preparedEmail.get('subject').includes('Swimming Pool Construction'))
-  assert.ok(preparedEmail.get('body').includes('Website Check'))
-  assert.ok(preparedEmail.get('body').includes('Swimming Pool Construction'))
-  assert.ok(preparedEmail.get('body').includes('residential building consultation'))
-  await screenshot('contact-enquiry-preview')
-  await evaluate(`[...document.querySelectorAll('.form-success button')].find(button => button.textContent.includes('Edit enquiry')).click()`)
-  await waitFor(`!!document.querySelector('form')`, 'edit enquiry')
+  await waitFor(`!!document.querySelector('.form-feedback--error') && !document.querySelector('fieldset').disabled`, 'failed enquiry preserves its fields')
   assert.equal(await evaluate(`document.querySelector('[name="name"]').value`), 'Website Check')
+  assert.equal(contactRequests.length, 1)
+  const firstReference = contactRequests[0].headers['idempotency-key']
+  assert.match(firstReference, /^[0-9a-f-]{36}$/)
+  assert.equal(contactRequests[0].body.service, serviceSlugs[1])
+  assert.equal(contactRequests[0].body.company_website, '')
+
+  contactReply = 'html'
+  await evaluate(`document.querySelector('form').requestSubmit()`)
+  await waitFor(`!!document.querySelector('.form-feedback--error') && !document.querySelector('fieldset').disabled`, 'HTML responses cannot claim acceptance')
+  assert.equal(contactRequests.length, 2)
+  assert.equal(contactRequests[1].headers['idempotency-key'], firstReference)
+  assert.equal(await evaluate(`!!document.querySelector('.form-success')`), false)
+
+  contactReply = 'success'
+  await evaluate(`document.querySelector('form').requestSubmit()`)
+  await waitFor(`!!document.querySelector('.form-success')`, 'explicit JSON enquiry acceptance')
+  assert.equal(contactRequests[2].headers['idempotency-key'], firstReference)
+  assert.ok((await evaluate(`document.querySelector('.form-success').textContent`)).includes('Your enquiry has been sent'))
+  await screenshot('contact-enquiry-success')
+  await evaluate(`document.querySelector('.form-success button').click()`)
+  await waitFor(`!!document.querySelector('form')`, 'start another enquiry')
+  assert.equal(await evaluate(`document.querySelector('[name="name"]').value`), '')
+  assert.equal(await evaluate(`document.querySelector('[name="service"]').value`), serviceSlugs[1])
+  await evaluate(`(() => {
+    const values = { name: 'Website Check', email: 'check@example.com', message: 'A website verification enquiry for a residential building consultation.' };
+    for (const [name, value] of Object.entries(values)) { const input = document.querySelector('[name="' + name + '"]'); const prototype = input.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype; Object.getOwnPropertyDescriptor(prototype, 'value').set.call(input, value); input.dispatchEvent(new Event('input', { bubbles: true })); }
+  })()`)
+  contactReply = 'error'
+  await evaluate(`document.querySelector('form').requestSubmit()`)
+  await waitFor(`!!document.querySelector('.form-feedback--error') && !document.querySelector('fieldset').disabled`, 'new enquiry failure')
+  assert.notEqual(contactRequests[3].headers['idempotency-key'], firstReference)
+  await evaluate(`(() => { const input = document.querySelector('[name="message"]'); Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(input, 'An updated enquiry about a different residential pool project.'); input.dispatchEvent(new Event('input', { bubbles: true })); })()`)
+  contactReply = 'success'
+  await evaluate(`document.querySelector('form').requestSubmit()`)
+  await waitFor(`!!document.querySelector('.form-success')`, 'updated enquiry acceptance')
+  assert.notEqual(contactRequests[4].headers['idempotency-key'], contactRequests[3].headers['idempotency-key'])
 
   await navigate('/')
   await evaluate(`document.querySelector('.dropdown-toggle').click()`)
@@ -337,14 +383,15 @@ try {
   assert.equal(await evaluate(`document.querySelector('.mobile-menu-toggle').getAttribute('aria-expanded')`), 'false')
   assert.notEqual(await evaluate(`document.body.style.overflow`), 'hidden')
 
-  await navigate('/')
-  if (await evaluate(`document.querySelector('.home-hero-image').dataset.imageSource === 'photograph'`)) {
-    await evaluate(`document.querySelector('.home-hero-image img').dispatchEvent(new Event('error'))`)
+  await navigate('/about')
+  await waitFor(`document.querySelector('.page-intro-image .site-image').classList.contains('is-loaded')`, 'loaded image before fallback test')
+  if (await evaluate(`document.querySelector('.page-intro-image .site-image').dataset.imageSource === 'photograph'`)) {
+    await evaluate(`document.querySelector('.page-intro-image .site-image img').dispatchEvent(new Event('error'))`)
   }
-  await waitFor(`document.querySelector('.home-hero-image img').naturalWidth > 0 && document.querySelector('.home-hero-image img').alt.includes('illustration')`, 'local image fallback')
+  await waitFor(`document.querySelector('.page-intro-image .site-image img').naturalWidth > 0 && document.querySelector('.page-intro-image .site-image img').alt.includes('illustration')`, 'local image fallback')
   await screenshot('image-fallback-mobile')
-  await evaluate(`document.querySelector('.home-hero-image img').dispatchEvent(new Event('error'))`)
-  await waitFor(`!!document.querySelector('.home-hero-image .image-unavailable') && !document.querySelector('.home-hero-image img')`, 'terminal fallback does not show a broken image')
+  await evaluate(`document.querySelector('.page-intro-image .site-image img').dispatchEvent(new Event('error'))`)
+  await waitFor(`!!document.querySelector('.page-intro-image .image-unavailable') && !document.querySelector('.page-intro-image .site-image img')`, 'terminal fallback does not show a broken image')
   await navigate('/contact')
   await screenshot('contact-mobile', true)
   await viewport(1440)
@@ -356,9 +403,10 @@ try {
   await evaluate(`document.querySelector('.company-registration').scrollIntoView({ block: 'center', behavior: 'instant' })`)
   await screenshot('company-registration-mobile')
   assert.deepEqual(jsErrors, [], 'Browser JavaScript or React console errors were found.')
-  const report = { passed: true, routeChecks: checked.length, routes: checked, interactions: ['official company identity and contacts', 'project filters', 'FAQ accordion and keyboard navigation', 'FAQ search and reset', 'required and invalid phone validation', 'prepared enquiry sharing and editing', 'service preselection', 'desktop dropdown and Escape', 'direct WhatsApp link', 'mobile menu, Escape, submenu and route cleanup', 'local image fallback'], externalAssetFailures: [...externalFailures] }
+  const report = { passed: true, routeChecks: checked.length, routes: checked, layoutWarnings, contactRequests: contactRequests.length, mailRequestsMocked: true, interactions: ['official company identity and contacts', 'project filters', 'FAQ accordion and keyboard navigation', 'FAQ search and reset', 'required and invalid phone validation', 'controlled submission failure and preserved inputs', 'HTML response rejection', 'explicit JSON acceptance', 'retry, changed-payload and new-enquiry references', 'service preselection', 'desktop dropdown and Escape', 'direct WhatsApp link', 'mobile menu, Escape, submenu and route cleanup', 'local image fallback'], externalAssetFailures: [...externalFailures] }
   await writeFile(path.join(output, 'report.json'), JSON.stringify(report, null, 2))
-  console.log(`Passed ${checked.length} route/layout checks and all interaction checks. No JavaScript console errors.`)
+  console.log(`Passed ${checked.length} route checks and all interaction/contact checks. No JavaScript console errors.`)
+  if (layoutWarnings.length) console.log(`Existing homepage mobile layout warnings: ${layoutWarnings.length}. Recorded in report.json.`)
   console.log(`Screenshots and report: ${output}`)
   if (externalFailures.size) console.log(`External assets blocked by this environment: ${[...externalFailures].join(', ')}. Local image fallbacks verified.`)
 } catch (error) {

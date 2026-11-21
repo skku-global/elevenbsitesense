@@ -15,6 +15,7 @@ dist-ssr
 # Environment files and private credentials
 .env
 .env.*
+!.env.example
 *.pem
 *.key
 *.p12

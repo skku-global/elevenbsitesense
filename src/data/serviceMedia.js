@@ -60,7 +60,6 @@ import lockResult from '../assets/images/interlock/result-driveway.webp'
 import paintMaterials from '../assets/images/painting/step-materials.webp'
 import paintExterior from '../assets/images/painting/process-exterior.webp'
 import paintPrep from '../assets/images/painting/step-prep.webp'
-import paintRoll from '../assets/images/painting/step-painting.webp'
 import paintFinish from '../assets/images/painting/step-finish.webp'
 import paintResult from '../assets/images/painting/result-living.webp'
 

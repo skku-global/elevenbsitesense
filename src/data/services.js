@@ -1,8 +1,9 @@
 import { serviceMedia } from './serviceMedia'
+import { getServiceOption } from './serviceOptions.js'
 
 export const services = [
   {
-    slug: 'general-building-contracting', title: 'General Building Contracting', shortTitle: 'Building construction', category: 'Construction',
+    ...getServiceOption('general-building-contracting'),
     ...serviceMedia.construction,
     description: 'From the first foundation to the final detail, a considered approach to building your vision.',
     introduction: 'A well-built space begins with a clear plan. Our general building service brings the different stages of a construction project together, with attention to practical design, material selection, site coordination, and the details that make a building work beautifully.',
@@ -16,7 +17,7 @@ export const services = [
     related: ['swimming-pool-construction', 'pop-ceiling-installation', 'tiling'],
   },
   {
-    slug: 'swimming-pool-construction', title: 'Swimming Pool Construction', shortTitle: 'Swimming pools', category: 'Outdoor living',
+    ...getServiceOption('swimming-pool-construction'),
     ...serviceMedia.pool,
     description: 'Beautifully planned pools that bring a new dimension to your outdoor living space.',
     introduction: 'A swimming pool should feel like a natural extension of your property. We help shape the layout, structure, waterproofing, finishes, and equipment requirements around how you want to enjoy the space, from a quiet family retreat to an elegant entertaining area.',
@@ -30,7 +31,7 @@ export const services = [
     related: ['tiling', 'interlock-paving', 'general-building-contracting'],
   },
   {
-    slug: 'pop-ceiling-installation', title: 'P.O.P. Ceiling Installation', shortTitle: 'P.O.P. ceilings', category: 'Interior finishing',
+    ...getServiceOption('pop-ceiling-installation'),
     ...serviceMedia.ceiling,
     description: 'Elegant ceiling designs, crisp lines, and thoughtful integration of light and space.',
     introduction: 'The ceiling is an essential part of a room’s character. Our plaster of Paris ceiling service helps you create a refined finish, from simple recessed details to carefully composed feature ceilings, with lighting and service access considered early in the design.',
@@ -44,7 +45,7 @@ export const services = [
     related: ['artwork-and-interior-design', 'painting', 'tiling'],
   },
   {
-    slug: 'artwork-and-interior-design', title: 'Artwork and Interior Design', shortTitle: 'Interiors & artwork', category: 'Interior design',
+    ...getServiceOption('artwork-and-interior-design'),
     ...serviceMedia.interior,
     description: 'Thoughtful interiors and distinctive artwork that make a space feel entirely your own.',
     introduction: 'Good interiors are personal, functional, and beautifully composed. We work with your ideas to develop a cohesive direction for colours, materials, decorative finishes, and artwork, so that every choice contributes to a space you enjoy spending time in.',
@@ -58,7 +59,7 @@ export const services = [
     related: ['pop-ceiling-installation', 'painting', 'tiling'],
   },
   {
-    slug: 'tiling', title: 'Tiling', shortTitle: 'Precision tiling', category: 'Interior finishing',
+    ...getServiceOption('tiling'),
     ...serviceMedia.tiling,
     description: 'Beautiful surfaces, precise alignment, and the right finish for every room.',
     introduction: 'Beautiful tiling relies on what sits beneath the surface as much as the tile itself. We consider preparation, setting-out, adhesive selection, joints, and finishing details to create floors and walls that suit the room and its use.',
@@ -72,7 +73,7 @@ export const services = [
     related: ['swimming-pool-construction', 'painting', 'artwork-and-interior-design'],
   },
   {
-    slug: 'interlock-paving', title: 'Interlock Paving', shortTitle: 'Interlock paving', category: 'Exterior finishing',
+    ...getServiceOption('interlock-paving'),
     ...serviceMedia.interlock,
     description: 'Well-planned driveways, walkways, and outdoor surfaces with enduring appeal.',
     introduction: 'Your approach and outdoor surfaces set the tone for the whole property. Our interlock paving service considers ground preparation, load requirements, drainage, edging, and pattern selection to create a practical and welcoming exterior.',
@@ -86,7 +87,7 @@ export const services = [
     related: ['imported-stamped-interlock', 'swimming-pool-construction', 'general-building-contracting'],
   },
   {
-    slug: 'imported-stamped-interlock', title: 'Imported Stamped Interlock', shortTitle: 'Stamped interlock', category: 'Exterior finishing',
+    ...getServiceOption('imported-stamped-interlock'),
     ...serviceMedia.stamped,
     description: 'Distinctive outdoor patterns and textured finishes for a beautifully composed exterior.',
     introduction: 'Decorative stamped finishes can add depth and definition to an outdoor space. We discuss the available imported systems, patterns, colours, and installation requirements so that the selected finish fits your property, your budget, and local availability.',
@@ -100,7 +101,7 @@ export const services = [
     related: ['interlock-paving', 'general-building-contracting', 'painting'],
   },
   {
-    slug: 'painting', title: 'Painting', shortTitle: 'Painting & finishes', category: 'Interior & exterior',
+    ...getServiceOption('painting'),
     ...serviceMedia.painting,
     description: 'Considered colour, careful preparation, and beautiful interior and exterior finishes.',
     introduction: 'A beautifully painted space starts with preparation. We help you select appropriate colours and paint systems, review the condition of the surfaces, and agree a finishing scope that gives your interiors and exteriors a fresh, cohesive appearance.',

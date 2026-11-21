@@ -10,7 +10,6 @@ import { tiktokVideos, TIKTOK_PROFILE as TIKTOK } from '../data/tiktok'
 import heroImg from '../assets/images/pool/hero-ai.webp'
 import curvedImg from '../assets/images/pool/gallery-curved-mosaic.webp'
 import mosaicImg from '../assets/images/pool/step-mosaic.webp'
-import renderImg from '../assets/images/pool/process-rendering.webp'
 import digImg from '../assets/images/pool/step-excavation.webp'
 import shellImg from '../assets/images/pool/step-structure.webp'
 import ownDeck from '../assets/images/projects/swimming-pool-tiled-deck.webp'
@@ -77,7 +76,7 @@ export default function Home() {
       />
 
       <section className="ph-hero" aria-labelledby="home-heading">
-        <img src={heroImg} alt="Modern villa with a large turquoise mosaic swimming pool at sunset" fetchpriority="high" />
+        <img src={heroImg} alt="Modern villa with a large turquoise mosaic swimming pool at sunset" fetchPriority="high" />
         <div className="ph-wrap">
           <p className="ph-eyebrow ph-eyebrow--light">Swimming pool specialists · Nigeria</p>
           <h1 id="home-heading">Luxury Swimming Pools,<br /><em>Built to Last.</em></h1>

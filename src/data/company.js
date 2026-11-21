@@ -24,7 +24,8 @@ export const company = {
   primaryWhatsAppIndex: 0,
   get phone() { return this.phoneNumbers[0]?.number || '' },
   get whatsapp() { return this.phoneNumbers[this.primaryWhatsAppIndex]?.international || '' },
-  email: 'ganiyutaiwo2020@gmail.com',
+  get whatsappDisplay() { return this.phoneNumbers[this.primaryWhatsAppIndex]?.number || '' },
+  email: 'info@elevenbsitesense.com',
   addressLines: ['4th Floor, Lister Building, Ring Road,', 'Ibadan, Oyo State, Nigeria.'],
   get address() { return this.addressLines.join('\n') },
   descriptionShort: 'A reliable general building contractor bringing residential, commercial, and specialised construction and finishing projects to life.',
@@ -44,7 +45,7 @@ export const company = {
   ],
   serviceArea: '',
   officeHours: '',
-  websiteUrl: '',
+  websiteUrl: 'https://elevenbsitesense.com',
   contactFormEndpoint: '/api/contact', // Vercel function (api/contact.js) that emails enquiries via Resend.
 }
 
