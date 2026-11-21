@@ -1,5 +1,6 @@
 // Server-only Redis coordination. Lua keeps rate limits and reservations atomic
 // across concurrent Vercel instances. Delivery receipts deliberately do not expire.
+import { redactDiagnosticMessage } from './contact-diagnostics.js'
 export const retryWindowMs = 23 * 60 * 60 * 1000 // Resend keeps provider keys for 24 hours.
 export const lockDurationMs = 45_000 // Longer than the function's 30-second maximum.
 const rateWindowSeconds = 600
@@ -63,7 +64,15 @@ return cjson.encode({updated=true})
 `
 
 export class ContactStoreError extends Error {
-  constructor() { super('Contact storage unavailable'); this.name = 'ContactStoreError' }
+  constructor(code = 'storage_invalid_response', { status, variables, providerMessage } = {}) {
+    super('Contact storage unavailable')
+    this.name = 'ContactStoreError'
+    this.code = code
+    this.provider = 'upstash'
+    this.status = status
+    this.variables = variables
+    this.providerMessage = providerMessage
+  }
 }
 
 export function createContactStore({ url, token, fetchImpl = fetch, timeoutMs = 2000 }) {
@@ -71,8 +80,8 @@ export function createContactStore({ url, token, fetchImpl = fetch, timeoutMs = 
   try {
     endpoint = new URL(url)
     if (endpoint.protocol !== 'https:' || !endpoint.hostname.endsWith('.upstash.io') || endpoint.username || endpoint.password || endpoint.search || endpoint.hash || endpoint.pathname !== '/') throw new Error('Invalid endpoint')
-    if (!token) throw new Error('Missing token')
-  } catch { throw new ContactStoreError() }
+  } catch { throw new ContactStoreError('invalid_storage_endpoint', { variables: ['UPSTASH_REDIS_REST_URL'] }) }
+  if (typeof token !== 'string' || !token.trim()) throw new ContactStoreError('missing_environment_variables', { variables: ['UPSTASH_REDIS_REST_TOKEN'] })
 
   const receiptKey = (id) => `${namespace}:receipt:${id}`
   const execute = async (command) => {
@@ -84,11 +93,15 @@ export function createContactStore({ url, token, fetchImpl = fetch, timeoutMs = 
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(command), signal: controller.signal,
       })
-      if (!response.ok) throw new ContactStoreError()
+      if (!response.ok) throw new ContactStoreError('storage_http_error', { status: response.status, ...([401, 403].includes(response.status) ? { variables: ['UPSTASH_REDIS_REST_TOKEN'] } : {}) })
       const body = await response.json()
-      if (body.error || typeof body.result !== 'string') throw new ContactStoreError()
+      if (body.error) throw new ContactStoreError('storage_command_rejected', { providerMessage: redactDiagnosticMessage(body.error, [url, token]) })
+      if (typeof body.result !== 'string') throw new ContactStoreError()
       return JSON.parse(body.result)
-    } catch { throw new ContactStoreError() }
+    } catch (error) {
+      if (error instanceof ContactStoreError) throw error
+      throw new ContactStoreError(controller.signal.aborted ? 'storage_timeout' : 'storage_request_failed')
+    }
     finally { clearTimeout(timer) }
   }
   return {

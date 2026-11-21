@@ -1,4 +1,5 @@
 import { company } from '../src/data/company.js'
+import { redactDiagnosticMessage } from './contact-diagnostics.js'
 
 export const companyEmailName = 'Eleven B Site-Sense Nigeria Limited'
 export const defaultContactFrom = 'Eleven B Site-Sense <info@elevenbsitesense.com>'
@@ -68,10 +69,17 @@ export function acknowledgementEmail(values, serviceTitle) {
 }
 
 export class ContactMailError extends Error {
-  constructor(code, status) { super('Email provider unavailable'); this.name = 'ContactMailError'; this.code = code; this.status = status }
+  constructor(code, status, providerMessage) {
+    super('Email provider unavailable')
+    this.name = 'ContactMailError'
+    this.code = code
+    this.status = status
+    this.provider = 'resend'
+    this.providerMessage = providerMessage
+  }
 }
 
-export function createMailSender({ key, fetchImpl = fetch, timeoutMs = 7000 }) {
+export function createMailSender({ key, fetchImpl = fetch, timeoutMs = 7000, redactions = [] }) {
   return async (payload, idempotencyKey) => {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), timeoutMs)
@@ -81,7 +89,11 @@ export function createMailSender({ key, fetchImpl = fetch, timeoutMs = 7000 }) {
         headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey },
         body: JSON.stringify(payload),
       })
-      if (!response.ok) throw new ContactMailError('provider_rejected', response.status)
+      if (!response.ok) {
+        let providerMessage = 'Resend returned a non-JSON error response'
+        try { const body = await response.json(); providerMessage = body?.message || 'Resend returned no error message' } catch { /* Preserve the HTTP status without logging an arbitrary response body. */ }
+        throw new ContactMailError('provider_rejected', response.status, redactDiagnosticMessage(providerMessage, [key, payload.from, payload.to, payload.reply_to, ...redactions]))
+      }
       const body = await response.json()
       if (typeof body?.id !== 'string' || !body.id.trim()) throw new ContactMailError('invalid_provider_response')
     } catch (error) {

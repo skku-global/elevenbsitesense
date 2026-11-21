@@ -18,6 +18,8 @@ function setup(options = {}) {
     if (url.includes('.upstash.io')) {
       const command = JSON.parse(config.body)
       if (controls.storageDown || (controls.failCommit && command[1].includes('local patch')) || (controls.failAckCommit && command[1].includes('local patch') && JSON.parse(command.at(-1)).acknowledgement === 'sent')) throw new Error('private storage detail')
+      if (controls.storageStatus) return json({ error: 'private storage detail' }, controls.storageStatus)
+      if (controls.storageError) return json({ error: controls.storageError })
       return redis.fetch(url, config)
     }
     assert.equal(url, 'https://api.resend.com/emails')
@@ -27,7 +29,7 @@ function setup(options = {}) {
     attempts.push({ key, payload, stage })
     if (controls.beforeSend) await controls.beforeSend(stage, payload)
     if (controls.failStage === stage) throw new Error(`${env.RESEND_API_KEY} ${valid.email} private mail failure`)
-    if (controls.rejectStage === stage) return json({ message: 'private provider detail' }, 503)
+    if (controls.rejectStage === stage) return json({ message: controls.providerMessage ?? 'private provider detail', privateField: 'Never log the full response body' }, controls.providerStatus ?? 503)
     if (deliveries.has(key)) { assert.equal(deliveries.get(key), config.body); return json({ id: key }) }
     deliveries.set(key, config.body)
     if (controls.failAfterAccept && stage === 'notification') { controls.failAfterAccept = false; throw new Error('connection lost after acceptance') }
@@ -244,6 +246,87 @@ test('missing credentials or unavailable storage cannot bypass coordination', as
   }
 })
 
+test('missing configuration logs every required variable name without values or provider calls', async () => {
+  for (const missing of [['RESEND_API_KEY'], ['UPSTASH_REDIS_REST_URL', 'UPSTASH_REDIS_REST_TOKEN'], ['RESEND_API_KEY', 'UPSTASH_REDIS_REST_URL', 'UPSTASH_REDIS_REST_TOKEN']]) {
+    const app = setup({ env: Object.fromEntries(missing.map((name) => [name, '  '])) })
+    const id = randomUUID()
+    const response = await app.request({ id })
+    assert.equal(response.code, 503)
+    assert.deepEqual(response.body, { ok: false, code: 'service_unavailable' })
+    assert.deepEqual(app.logs, [['contact_configuration_error', { enquiryId: id, reason: 'missing_environment_variables', variables: missing }]])
+    assert.equal(app.attempts.length, 0)
+    assert.equal(app.redis.values.size, 0)
+    const log = JSON.stringify(app.logs)
+    for (const value of [app.env.CONTACT_FROM, app.env.CONTACT_TO, app.env.RESEND_API_KEY, app.env.UPSTASH_REDIS_REST_URL, app.env.UPSTASH_REDIS_REST_TOKEN].filter((value) => value.trim())) assert.ok(!log.includes(value))
+  }
+})
+
+test('invalid configuration logs only the affected variable names and controlled reasons', async () => {
+  for (const [env, variable, reason] of [
+    [{ CONTACT_FROM: '"Eleven B Site-Sense <info@elevenbsitesense.com>"' }, 'CONTACT_FROM', 'invalid_sender_format'],
+    [{ CONTACT_FROM: 'Company <info@unapproved.example>' }, 'CONTACT_FROM', 'sender_domain_not_allowed'],
+    [{ CONTACT_TO: 'invalid destination' }, 'CONTACT_TO', 'invalid_destination_address'],
+    [{ UPSTASH_REDIS_REST_URL: 'https://unapproved.example/private' }, 'UPSTASH_REDIS_REST_URL', 'invalid_storage_endpoint'],
+    [{ CONTACT_ALLOWED_ORIGINS: 'https://elevenbsitesense.com/private' }, 'CONTACT_ALLOWED_ORIGINS', 'invalid_origin_configuration'],
+    [{ VERCEL_ENV: 'preview', VERCEL_URL: 'invalid host' }, 'VERCEL_URL', 'invalid_preview_origin_configuration'],
+  ]) {
+    const app = setup({ env })
+    assert.equal((await app.request()).code, 503)
+    const [[event, details]] = app.logs
+    assert.equal(event, 'contact_configuration_error')
+    assert.deepEqual(details.variables, [variable])
+    assert.equal(details.reason || details.code, reason)
+    assert.ok(!JSON.stringify(app.logs).includes(env[variable]))
+    assert.equal(app.attempts.length, 0)
+  }
+})
+
+test('Resend rejection logs status and a redacted message while preserving enquiry and acknowledgement behavior', async () => {
+  for (const stage of ['notification', 'acknowledgement']) {
+    const app = setup({ rejectStage: stage, providerStatus: 403 })
+    const sensitiveValues = [app.env.RESEND_API_KEY, app.env.UPSTASH_REDIS_REST_TOKEN, app.env.UPSTASH_REDIS_REST_URL, app.env.CONTACT_FROM, app.env.CONTACT_TO, app.env.AUTOREPLY, ...Object.values(valid)]
+    app.controls.providerMessage = `The sending domain is not verified. ${sensitiveValues.join(' | ')}`
+    const id = randomUUID()
+    const response = await app.request({ id })
+    await app.drain()
+    assert.equal(response.code, stage === 'notification' ? 502 : 200)
+    const [[event, details]] = app.logs
+    assert.equal(event, `contact_${stage}_failed`)
+    assert.equal(details.enquiryId, id)
+    assert.equal(details.provider, 'resend')
+    assert.equal(details.code, 'provider_rejected')
+    assert.equal(details.status, 403)
+    assert.ok(details.message.startsWith('The sending domain is not verified.'))
+    assert.ok(details.message.includes('[REDACTED]'))
+    const log = JSON.stringify(app.logs)
+    for (const value of sensitiveValues) assert.ok(!log.includes(value), `Leaked: ${value}`)
+    assert.ok(!log.includes('Never log the full response body'))
+    assert.ok(!JSON.stringify(response.body).includes(details.message))
+    assert.equal(app.attempts.length, stage === 'notification' ? 1 : 2)
+    if (stage === 'acknowledgement') {
+      assert.equal((await app.request({ id })).code, 200)
+      await app.drain()
+      assert.equal(app.attempts.length, 2)
+    }
+  }
+})
+
+test('Redis failures log a controlled cause without leaking storage or customer details', async () => {
+  for (const [options, expected] of [
+    [{ storageDown: true }, { code: 'storage_request_failed' }],
+    [{ storageStatus: 401 }, { code: 'storage_http_error', status: 401, variables: ['UPSTASH_REDIS_REST_TOKEN'] }],
+    [{ storageError: 'ERR command denied: test-only-redis-token https://test-db.upstash.io' }, { code: 'storage_command_rejected', message: 'ERR command denied: [REDACTED] [REDACTED]' }],
+  ]) {
+    const app = setup(options)
+    const id = randomUUID()
+    assert.equal((await app.request({ id })).code, 503)
+    assert.deepEqual(app.logs, [['contact_storage_unavailable', { enquiryId: id, provider: 'upstash', ...expected }]])
+    assert.equal(app.attempts.length, 0)
+    const log = JSON.stringify(app.logs)
+    for (const value of [app.env.RESEND_API_KEY, app.env.UPSTASH_REDIS_REST_TOKEN, app.env.UPSTASH_REDIS_REST_URL, valid.email, valid.message, 'private storage detail']) assert.ok(!log.includes(value))
+  }
+})
+
 test('a receipt commit failure after required acceptance preserves success and skips optional delivery', async () => {
   const app = setup({ failCommit: true })
   const id = randomUUID()
@@ -272,4 +355,14 @@ test('provider timeouts and malformed acceptance are controlled errors', async (
   await assert.rejects(sender({}, 'test-key'), (error) => error instanceof ContactMailError && error.code === 'provider_timeout')
   const malformed = createMailSender({ key: 'test-only-key', fetchImpl: async () => json({ ok: true }) })
   await assert.rejects(malformed({}, 'test-key'), (error) => error.code === 'invalid_provider_response')
+})
+
+test('non-JSON Resend failures retain HTTP status without exposing arbitrary response content', async () => {
+  const sender = createMailSender({ key: 'test-only-key', fetchImpl: async () => new Response('private error page test-only-key', { status: 502 }) })
+  await assert.rejects(sender({}, 'test-key'), (error) => {
+    assert.equal(error.code, 'provider_rejected')
+    assert.equal(error.status, 502)
+    assert.equal(error.providerMessage, 'Resend returned a non-JSON error response')
+    return true
+  })
 })

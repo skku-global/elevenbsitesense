@@ -4,6 +4,7 @@ import { ipAddress } from '@vercel/functions'
 import { normalizeEnquiry, validateEnquiry, getEnquiryServiceTitle, isSubmissionId, isEmail } from '../src/data/enquiry.js'
 import { createContactStore } from './contact-store.js'
 import { createMailSender, notificationEmail, acknowledgementEmail, defaultContactFrom, defaultContactTo } from './contact-mail.js'
+import { ContactConfigurationError, missingContactVariables, contactDiagnosticRedactions, diagnosticDetails } from './contact-diagnostics.js'
 
 const productionOrigins = ['https://elevenbsitesense.com', 'https://www.elevenbsitesense.com', 'https://elevenbsitesense.vercel.app']
 const payloadLimit = 16 * 1024
@@ -13,14 +14,19 @@ const header = (req, name) => typeof req.headers?.[name] === 'string' ? req.head
 export function allowedOrigins(env) {
   const result = new Set(productionOrigins)
   for (const value of (env.CONTACT_ALLOWED_ORIGINS || '').split(',').map((origin) => origin.trim()).filter(Boolean)) {
-    const url = new URL(value)
-    if (url.protocol !== 'https:' || url.origin !== value) throw new Error('Invalid origin configuration')
-    result.add(value)
+    try {
+      const url = new URL(value)
+      if (url.protocol !== 'https:' || url.origin !== value) throw new Error('Invalid origin configuration')
+      result.add(value)
+    } catch { throw new ContactConfigurationError('invalid_origin_configuration', ['CONTACT_ALLOWED_ORIGINS']) }
   }
   if (env.VERCEL_ENV === 'preview') {
-    for (const host of [env.VERCEL_URL, env.VERCEL_BRANCH_URL].filter(Boolean)) {
-      const url = new URL(`https://${host}`)
-      if (url.hostname.endsWith('.vercel.app') && url.origin === `https://${host}`) result.add(url.origin)
+    for (const name of ['VERCEL_URL', 'VERCEL_BRANCH_URL']) {
+      if (!env[name]) continue
+      try {
+        const url = new URL(`https://${env[name]}`)
+        if (url.hostname.endsWith('.vercel.app') && url.origin === `https://${env[name]}`) result.add(url.origin)
+      } catch { throw new ContactConfigurationError('invalid_preview_origin_configuration', [name]) }
     }
   }
   if (env.VERCEL_ENV === 'development' || (!env.VERCEL_ENV && env.NODE_ENV === 'development')) {
@@ -48,7 +54,10 @@ export function createContactHandler({ getEnv = () => process.env, fetchImpl = f
     try {
       env = getEnv()
       if (!allowedOrigins(env).has(header(req, 'origin'))) return rejection(res, 403, 'origin_not_allowed')
-    } catch { return rejection(res, 503, 'service_unavailable') }
+    } catch (error) {
+      logger.error('contact_configuration_error', error instanceof ContactConfigurationError ? diagnosticDetails(error) : { reason: 'environment_access_failed' })
+      return rejection(res, 503, 'service_unavailable')
+    }
     if (!/^application\/json(?:\s*;|$)/i.test(header(req, 'content-type'))) return rejection(res, 415, 'unsupported_content_type')
     if (Number(header(req, 'content-length')) > payloadLimit) return rejection(res, 413, 'payload_too_large')
 
@@ -68,24 +77,32 @@ export function createContactHandler({ getEnv = () => process.env, fetchImpl = f
     const fieldErrors = validateEnquiry(body)
     if (Object.keys(fieldErrors).length) return rejection(res, 400, 'validation_error', { fieldErrors })
 
+    const values = normalizeEnquiry(body)
+    const redactions = [...contactDiagnosticRedactions(env), ...Object.values(values), defaultContactFrom, defaultContactTo]
     let store, send, from, to
     try {
+      const missing = missingContactVariables(env)
+      if (missing.length) throw new ContactConfigurationError('missing_environment_variables', missing)
       from = env.CONTACT_FROM || defaultContactFrom
       to = env.CONTACT_TO || defaultContactTo
       const fromEmail = from.match(/<([^<>]+)>$/)?.[1]
-      if (/[\r\n]/.test(from) || !isEmail(fromEmail) || !fromEmail.endsWith('@elevenbsitesense.com') || !isEmail(to) || !env.RESEND_API_KEY?.trim()) throw new Error('Invalid mail configuration')
+      if (/[\r\n]/.test(from) || !isEmail(fromEmail)) throw new ContactConfigurationError('invalid_sender_format', ['CONTACT_FROM'])
+      if (!fromEmail.endsWith('@elevenbsitesense.com')) throw new ContactConfigurationError('sender_domain_not_allowed', ['CONTACT_FROM'])
+      if (!isEmail(to)) throw new ContactConfigurationError('invalid_destination_address', ['CONTACT_TO'])
       store = createContactStore({ url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN, fetchImpl })
-      send = createMailSender({ key: env.RESEND_API_KEY, fetchImpl })
-    } catch { return rejection(res, 503, 'service_unavailable') }
+      send = createMailSender({ key: env.RESEND_API_KEY, fetchImpl, redactions })
+    } catch (error) {
+      logger.error('contact_configuration_error', { enquiryId: id, ...diagnosticDetails(error, redactions) })
+      return rejection(res, 503, 'service_unavailable')
+    }
 
-    const values = normalizeEnquiry(body)
     const serviceTitle = getEnquiryServiceTitle(values.service)
     const owner = randomUUID()
-    const safeLog = (event, error) => logger.error(event, { enquiryId: id, ...(error?.code ? { code: error.code } : {}), ...(Number.isInteger(error?.status) ? { status: error.status } : {}) })
+    const safeLog = (event, error) => logger.error(event, { enquiryId: id, ...diagnosticDetails(error, redactions) })
     let reservation
     try {
       reservation = await store.reserve({ id, owner, fingerprint: fingerprint(values), now: now(), autoreply: env.AUTOREPLY === 'true', ipHash: createHmac('sha256', env.UPSTASH_REDIS_REST_TOKEN).update(clientAddress(req, env)).digest('hex') })
-    } catch { safeLog('contact_storage_unavailable'); return rejection(res, 503, 'service_unavailable') }
+    } catch (error) { safeLog('contact_storage_unavailable', error); return rejection(res, 503, 'service_unavailable') }
     if (reservation.code === 'completed') {
       if (reservation.acknowledgementExpired) safeLog('contact_acknowledgement_retry_expired')
       return acceptance(res, id)
@@ -97,7 +114,7 @@ export function createContactHandler({ getEnv = () => process.env, fetchImpl = f
 
     const update = async (patch) => {
       try { return await store.update(id, owner, patch) }
-      catch { safeLog('contact_receipt_update_failed'); return false }
+      catch (error) { safeLog('contact_receipt_update_failed', error); return false }
     }
     const record = reservation.record
     if (record.notification !== 'sent') {

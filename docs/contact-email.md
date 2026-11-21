@@ -92,7 +92,7 @@ Official references consulted:
 3. The required notification is sent to `CONTACT_TO` with the validated customer address as Reply-To. Its independent provider key is `contact/<reference>/notification`.
 4. Only after Resend accepts that notification does the endpoint return `{ ok: true, status: "accepted", enquiryId: "<reference>" }`. The frontend verifies this explicit JSON response rather than treating arbitrary HTTP 200 HTML as delivery.
 5. With `AUTOREPLY=true`, Vercel `waitUntil` keeps the approved acknowledgement task running after the response. It uses `contact/<reference>/acknowledgement`, sends to the submitted email, and routes replies to the Zoho business inbox. It thanks the customer, confirms receipt, names their selected service, and says the team will review and respond.
-6. Acknowledgement failures are logged with an enquiry reference and controlled status/code, without names, email addresses, message text, tokens, keys, or provider error bodies. They never change notification success. A failed required notification never triggers an acknowledgement.
+6. Acknowledgement failures are logged with an enquiry reference, controlled status/code, and a sanitized provider message. Configured values and customer details are redacted; raw errors and provider response bodies are never logged. These failures never change notification success. A failed required notification never triggers an acknowledgement.
 
 Delivery receipts store references, payload fingerprints, timestamps, lease information, and delivery statuses, with no customer names, addresses, messages, or raw IPs. Rate-limit IP identifiers are keyed hashes. Receipt keys intentionally have no expiry; deleting/evicting them removes the long-term duplicate protection.
 
@@ -101,6 +101,44 @@ Resend retains provider idempotency keys for 24 hours. Unknown notification outc
 The form keeps its reference in component memory. Unchanged retries reuse it; editing the payload or starting another enquiry creates a fresh reference. A full page reload clears that memory, as it clears the existing form fields. Prepared-brief preview, email sharing, and downloads remain available when `company.contactFormEndpoint` is empty.
 
 Provider requests time out after seven seconds; storage requests after two seconds. Missing credentials or unavailable coordination produce controlled errors instead of sending without rate limiting. The function has a 30-second maximum and 45-second leases. If a notification is accepted but its receipt cannot be committed, acceptance is preserved and optional delivery is skipped; safe recovery still uses the existing provider key.
+
+## Production failure logs
+
+In Vercel, open the latest production deployment's **Logs**, filter to errors for `/api/contact`, then reproduce the failed submission. Server-side `console.error` entries include an event name and a diagnostic object. The browser still receives the existing controlled response, without configuration details.
+
+| Log event | Fields to inspect | Meaning |
+| --- | --- | --- |
+| `contact_configuration_error` | `reason` or `code`, `variables` | Missing or invalid configuration; `variables` lists names only |
+| `contact_storage_unavailable` | `provider`, `code`, `status`, `variables`, sanitized `message` when available | Redis coordination failed before email delivery; HTTP 401/403 points to the REST token, and rejected commands can indicate insufficient permissions |
+| `contact_notification_failed` | `provider: "resend"`, `code`, `status`, sanitized `message` | Required enquiry notification failed; the Resend HTTP status and error message identify a provider rejection |
+| `contact_acknowledgement_failed` | `provider`, `code`, `status`, sanitized `message` | Optional customer acknowledgement failed after the required notification succeeded |
+| `contact_receipt_update_failed` | `provider`, `code`, `status` | Redis could not save the delivery receipt; existing provider idempotency keys still protect recovery retries |
+
+For example, if the mail variables are present but Redis credentials are absent:
+
+```text
+contact_configuration_error {
+  enquiryId: "<submission reference>",
+  reason: "missing_environment_variables",
+  variables: ["UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN"]
+}
+```
+
+Both Redis variables are required in addition to the mail settings. Set them in the deployment's correct environment and redeploy to apply any changes. `CONTACT_FROM` and `CONTACT_TO` retain their official defaults when unset; `AUTOREPLY` is an optional switch. Invalid sender/destination formatting and malformed optional origins identify only the affected variable names.
+
+On a Resend rejection, look for a log like:
+
+```text
+contact_notification_failed {
+  enquiryId: "<submission reference>",
+  provider: "resend",
+  code: "provider_rejected",
+  status: 403,
+  message: "The sending domain is not verified. [REDACTED]"
+}
+```
+
+The example status/message is illustrative; the log records the actual provider status and sanitized message. Non-JSON error responses use a fixed description rather than exposing arbitrary response content. Network failures and timeouts have controlled codes without raw exception text. A `503 service_unavailable` indicates configuration or coordination failure; a required Resend rejection retains the existing `502 notification_unavailable` response.
 
 ## Checks and local development
 
