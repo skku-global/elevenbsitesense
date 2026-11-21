@@ -1172,36 +1172,59 @@
 }
 
 .contact-location {
-  background: var(--sand);
-  padding-block: 65px;
+  background: var(--navy);
+  color: var(--paper);
+  padding-block: clamp(72px, 7vw, 112px);
+  border-bottom: 1px solid #ffffff14;
 }
 
 .contact-location-grid {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 75px;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: clamp(48px, 6vw, 88px);
   align-items: center;
 }
 
-.contact-location-image {
-  height: 310px;
+.contact-location-grid > div {
+  min-width: 0;
+}
+
+.contact-location .eyebrow {
+  color: var(--gold-light);
+  margin-bottom: 24px;
 }
 
 .contact-location h2 {
-  font-size: 43px;
+  color: var(--paper);
+  font-size: clamp(43px, 4.4vw, 64px);
+  font-weight: 400;
+  line-height: 1.12;
+  max-width: 22ch;
 }
 
-.contact-location p:not(.eyebrow) {
+.contact-location h2 em {
+  color: var(--gold-light);
+}
+
+.contact-office-details {
+  border-left: 1px solid #bc9c6759;
+  padding-left: clamp(28px, 3vw, 44px);
+}
+
+.contact-location .contact-office-details .office-address {
+  margin-top: 0;
+  color: var(--paper);
+  font-size: 18px;
+  line-height: 1.75;
+  gap: 4px;
+}
+
+.contact-location .contact-office-details .contact-office-support {
   margin-top: 24px;
-  font-size: 13px;
+  color: #c1cbd0;
+  font-size: 14px;
   line-height: 1.9;
-}
-
-.image-reference-note {
-  display: block;
-  font-size: 8px;
-  color: var(--text);
-  margin-top: 20px;
+  max-width: 48ch;
 }
 
 /* 404 */
@@ -1410,7 +1433,7 @@
     max-width: 300px;
   }
   .contact-location-grid {
-    gap: 45px;
+    gap: 48px;
   }
   .not-found-inner {
     gap: 50px;
@@ -1582,13 +1605,13 @@
   }
   .contact-location-grid {
     grid-template-columns: 1fr;
-    gap: 35px;
+    gap: 36px;
   }
-  .contact-location-image {
-    height: 330px;
-  }
-  .contact-location-grid > div:last-child {
-    max-width: 600px;
+  .contact-office-details {
+    border-left: 0;
+    border-top: 1px solid #bc9c6759;
+    padding: 28px 0 0;
+    max-width: 560px;
   }
   .not-found-inner {
     grid-template-columns: 1fr;
@@ -1932,13 +1955,16 @@
     width: 100%;
   }
   .contact-location {
-    padding-block: 48px;
-  }
-  .contact-location-image {
-    height: 255px;
+    padding-block: 56px;
   }
   .contact-location h2 {
-    font-size: 39px;
+    font-size: clamp(34px, 8.6vw, 46px);
+  }
+  .contact-location .eyebrow {
+    margin-bottom: 20px;
+  }
+  .contact-location .contact-office-details .office-address {
+    font-size: 17px;
   }
   .not-found-inner {
     gap: 32px;

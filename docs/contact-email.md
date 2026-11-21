@@ -26,7 +26,7 @@ Set these in **Vercel → Project → Settings → Environment Variables → Pro
 
 Do not prefix credentials with `VITE_`, put them in `src/`, or commit `.env.local`. Never place an API key or Redis token in public HTML, browser storage, or an email template.
 
-The production origins `https://elevenbsitesense.com` and `https://www.elevenbsitesense.com` are built in. The current deployment's exact `VERCEL_URL`/`VERCEL_BRANCH_URL` are allowed in preview context. Localhost and 127.0.0.1 on ports 3000, 5173, 4173, and 4183 are allowed only in development. There is no wildcard allowance for other Vercel projects.
+The production origins `https://elevenbsitesense.com`, `https://www.elevenbsitesense.com`, and `https://elevenbsitesense.vercel.app` are built in. The current deployment's exact `VERCEL_URL`/`VERCEL_BRANCH_URL` are allowed in preview context. Localhost and 127.0.0.1 on ports 3000, 5173, 4173, and 4183 are allowed only in development. There is no wildcard allowance for other Vercel projects.
 
 `VERCEL`, `VERCEL_ENV`, `VERCEL_URL`, `VERCEL_BRANCH_URL`, and `NODE_ENV` are supplied by the hosting/development runtime; do not manually imitate production runtime settings. `BROWSER_PATH`, `SITE_URL`, and `BROWSER_DEBUG_PORT` are optional local browser-check overrides and are not production mail settings.
 

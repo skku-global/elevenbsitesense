@@ -5,7 +5,7 @@ import { normalizeEnquiry, validateEnquiry, getEnquiryServiceTitle, isSubmission
 import { createContactStore } from './contact-store.js'
 import { createMailSender, notificationEmail, acknowledgementEmail, defaultContactFrom, defaultContactTo } from './contact-mail.js'
 
-const productionOrigins = ['https://elevenbsitesense.com', 'https://www.elevenbsitesense.com']
+const productionOrigins = ['https://elevenbsitesense.com', 'https://www.elevenbsitesense.com', 'https://elevenbsitesense.vercel.app']
 const payloadLimit = 16 * 1024
 const allowedFields = new Set(['name', 'email', 'phone', 'service', 'message', 'company_website', 'serviceTitle', 'source'])
 const header = (req, name) => typeof req.headers?.[name] === 'string' ? req.headers[name] : ''

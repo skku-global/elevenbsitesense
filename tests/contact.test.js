@@ -182,12 +182,27 @@ test('rate limits new enquiries independently from delivery retries', async () =
 })
 
 test('only approved production, exact preview and development origins are allowed', () => {
-  assert.deepEqual([...allowedOrigins({})], ['https://elevenbsitesense.com', 'https://www.elevenbsitesense.com'])
+  assert.deepEqual([...allowedOrigins({})], ['https://elevenbsitesense.com', 'https://www.elevenbsitesense.com', 'https://elevenbsitesense.vercel.app'])
   const preview = allowedOrigins({ VERCEL_ENV: 'preview', VERCEL_URL: 'eleven-preview.vercel.app' })
   assert.ok(preview.has('https://eleven-preview.vercel.app'))
   assert.ok(!preview.has('https://unrelated.vercel.app'))
   assert.ok(allowedOrigins({ VERCEL_ENV: 'development' }).has('http://localhost:3000'))
   assert.ok(!allowedOrigins({ VERCEL_ENV: 'production', NODE_ENV: 'development' }).has('http://localhost:3000'))
+})
+
+test('the exact production Vercel origin is accepted while lookalikes remain blocked', async () => {
+  const app = setup()
+  const accepted = await app.request({ origin: 'https://elevenbsitesense.vercel.app' })
+  await app.drain()
+  assert.equal(accepted.code, 200)
+  assert.equal(accepted.body.status, 'accepted')
+  const mailAttempts = app.attempts.length
+  for (const origin of ['https://elevenbsitesense-preview.vercel.app', 'https://elevenbsitesense.vercel.app.attacker.example', 'https://www.elevenbsitesense.vercel.app', 'http://elevenbsitesense.vercel.app', 'https://elevenbsitesense.vercel.app:444', 'https://elevenbsitesense.vercel.app/path', '']) {
+    const rejected = await app.request({ origin })
+    assert.equal(rejected.code, 403)
+    assert.equal(rejected.body.code, 'origin_not_allowed')
+  }
+  assert.equal(app.attempts.length, mailAttempts)
 })
 
 test('invalid origins, methods, JSON, sizes and fields never reach either provider', async () => {

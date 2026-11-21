@@ -3,14 +3,12 @@ import { Link, useLocation } from 'react-router-dom'
 import PageIntro from '../components/PageIntro'
 import ContactForm from '../components/ContactForm'
 import Button from '../components/Button'
-import SiteImage from '../components/SiteImage'
 import Reveal from '../components/Reveal'
 import SEO from '../components/SEO'
 import CompanyRegistration from '../components/CompanyRegistration'
 import CompanyContactDetails from '../components/CompanyContactDetails'
 import OfficeAddress from '../components/OfficeAddress'
 import { company, getWhatsAppUrl } from '../data/company'
-import { media } from '../data/media'
 
 export default function Contact() {
   const { search } = useLocation()
@@ -57,23 +55,16 @@ export default function Contact() {
           </Reveal>
         </div>
       </section>
-      <section className="contact-location">
+      <section className="contact-location" aria-labelledby="contact-office-heading">
         <div className="container contact-location-grid">
-          <div className="contact-location-image">
-            <SiteImage
-              src={media.residence}
-              alt="Modern residential architecture used as inspiration for your future project"
-              width={1200}
-              height={600}
-            />
-          </div>
-          <div>
+          <Reveal className="contact-office-intro">
             <p className="eyebrow">OUR OFFICE IN IBADAN</p>
-            <h2>Start the conversation.<br />Plan the possibilities.</h2>
+            <h2 id="contact-office-heading">Start the conversation.<br /><em>Plan the possibilities.</em></h2>
+          </Reveal>
+          <Reveal className="contact-office-details">
             <OfficeAddress />
-            <p>Contact {company.contactPerson} to arrange a visit. Include your project location so we can discuss availability, site access and logistics.</p>
-            <span className="image-reference-note">Architectural inspiration · Stock photograph</span>
-          </div>
+            <p className="contact-office-support">Contact {company.contactPerson} to arrange a visit. Include your project location so we can discuss availability, site access and logistics.</p>
+          </Reveal>
         </div>
       </section>
     </>
